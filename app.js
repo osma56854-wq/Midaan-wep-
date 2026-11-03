@@ -15,7 +15,10 @@ async function isCompromisedPassword(password){
     let response;
     try{
       response=await fetch("https://api.pwnedpasswords.com/range/"+hash.slice(0,5),{
-        headers:{"Add-Padding":"true"},
+        mode:"cors",
+        credentials:"omit",
+        cache:"no-store",
+        referrerPolicy:"no-referrer",
         signal:controller.signal
       });
     }finally{clearTimeout(timeout)}
