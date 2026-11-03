@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101918"><meta name="description" content="مِيدان — شبكة المعرفة والمهارات الصناعية">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://lkofveroqcrfehczdlkl.supabase.co wss://lkofveroqcrfehczdlkl.supabase.co; img-src 'self' data: blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://lkofveroqcrfehczdlkl.supabase.co wss://lkofveroqcrfehczdlkl.supabase.co https://api.pwnedpasswords.com; img-src 'self' data: blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>مِيدان | MIDAAN</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
@@ -33,17 +33,17 @@
     <div class="auth-switch"><button class="btn primary" id="showLogin">تسجيل الدخول</button><button class="btn" id="showSignup">إنشاء حساب</button></div>
     <div id="signupName" class="field hidden"><label>الاسم الظاهر</label><input id="displayName" autocomplete="name" placeholder="اسمك أو اسمك المهني"></div>
     <div class="field"><label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com"></div>
-    <div class="field"><label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password" placeholder="8 أحرف على الأقل"></div>
+    <div class="field"><label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password" placeholder="12 حرفًا على الأقل"></div>
     <button class="btn primary" id="authSubmit" style="width:100%">دخول</button>
     <button type="button" id="forgotPassword" style="display:block;width:100%;margin-top:10px;padding:7px;background:transparent;border:0;color:var(--green);font-weight:700;text-align:center">نسيت كلمة المرور؟</button>
     <div id="recoveryPanel" class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
       <h3 style="margin:0 0 10px">تعيين كلمة مرور جديدة</h3>
-      <div class="field"><label>كلمة المرور الجديدة</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="8 أحرف على الأقل"></div>
+      <div class="field"><label>كلمة المرور الجديدة</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="12 حرفًا على الأقل"></div>
       <div class="field"><label>تأكيد كلمة المرور</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="اكتبها مرة أخرى"></div>
       <button type="button" class="btn primary" id="saveNewPassword" style="width:100%">حفظ كلمة المرور الجديدة</button>
     </div>
     <div class="message" id="authMessage"></div>
-    <p class="tiny">بإنشاء الحساب، أنت توافق على استخدام مِيدان لتوثيق الخبرات المهنية. لا تُعامل المسودات كتعليمات سلامة معتمدة.</p>
+    <p class="tiny">بإنشاء الحساب، أنت توافق على استخدام مِيدان لتوثيق الخبرات المهنية. لا تُعامل المسودات كتعليمات سلامة معتمدة. عند التسجيل أو تغيير كلمة المرور، نفحصها ضد كلمات المرور المسربة بطريقة لا ترسل كلمة المرور نفسها.</p>
   </div>
 </div>
 
