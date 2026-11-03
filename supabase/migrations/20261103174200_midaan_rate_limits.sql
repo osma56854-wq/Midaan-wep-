@@ -16,6 +16,12 @@ create table if not exists private.midaan_api_rate_limits (
 );
 
 alter table private.midaan_api_rate_limits enable row level security;
+create policy midaan_rate_limits_deny_client
+on private.midaan_api_rate_limits
+for all
+to anon, authenticated
+using (false)
+with check (false);
 revoke all on schema private from public, anon;
 grant usage on schema private to authenticated;
 revoke all on table private.midaan_api_rate_limits from public, anon, authenticated;
