@@ -1,0 +1,32 @@
+name: Validate MIDAAN frontend
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: node --check app.js
+      - name: Check required frontend files and security settings
+        run: |
+          test -s index.html
+          test -s app.js
+          grep -q 'Content-Security-Policy' index.html
+          grep -q 'https://lkofveroqcrfehczdlkl.supabase.co' app.js
+          grep -q 'sb_publishable_' app.js
+          grep -q 'create_organization_with_owner' app.js
+          grep -q 'create_skill' app.js
+          grep -q 'PASSWORD_RECOVERY' app.js
+          echo "MIDAAN frontend static checks passed."
