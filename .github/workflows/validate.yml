@@ -32,6 +32,7 @@ jobs:
           test -s tests/skill-upload-utils.test.cjs
           test -s tests/maintenance.test.cjs
           test -s supabase/migrations/20261110140644_create_maintenance_tasks.sql
+          test -s supabase/migrations/20261110140827_index_maintenance_task_foreign_keys.sql
           test -s manifest.webmanifest
           test -s midaan-icon.svg
           test -s sw.js
