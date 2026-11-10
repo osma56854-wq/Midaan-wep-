@@ -34,6 +34,9 @@ jobs:
           test -s tests/marketplace.test.cjs
           test -s tests/rfq.test.cjs
           test -s supabase/migrations/20261110200000_global_rfq_and_quotes.sql
+          test -s supabase/migrations/20261110201000_limit_rfq_updates_to_status.sql
+          test -s supabase/migrations/20261110202000_snapshot_rfq_title.sql
+          test -s supabase/migrations/20261110203000_index_rfq_foreign_keys.sql
           test -s supabase/migrations/20261110190000_global_industrial_marketplace.sql
           test -s supabase/migrations/20261110140644_create_maintenance_tasks.sql
           test -s supabase/migrations/20261110140827_index_maintenance_task_foreign_keys.sql
