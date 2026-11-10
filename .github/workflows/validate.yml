@@ -1,7 +1,7 @@
 name: Validate MIDAAN frontend
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
           node --check skill-upload-utils.js
           node --check sw.js
       - name: Test navigation regression checks
-        run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs tests/maintenance.test.cjs tests/marketplace.test.cjs
+        run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs tests/maintenance.test.cjs tests/marketplace.test.cjs tests/rfq.test.cjs
       - name: Check required frontend files and security settings
         run: |
           test -s index.html
@@ -32,6 +32,11 @@ jobs:
           test -s tests/skill-upload-utils.test.cjs
           test -s tests/maintenance.test.cjs
           test -s tests/marketplace.test.cjs
+          test -s tests/rfq.test.cjs
+          test -s supabase/migrations/20261110200000_global_rfq_and_quotes.sql
+          test -s supabase/migrations/20261110201000_limit_rfq_updates_to_status.sql
+          test -s supabase/migrations/20261110202000_snapshot_rfq_title.sql
+          test -s supabase/migrations/20261110203000_index_rfq_foreign_keys.sql
           test -s supabase/migrations/20261110190000_global_industrial_marketplace.sql
           test -s supabase/migrations/20261110140644_create_maintenance_tasks.sql
           test -s supabase/migrations/20261110140827_index_maintenance_task_foreign_keys.sql

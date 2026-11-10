@@ -6,7 +6,7 @@ const html = fs.readFileSync("index.html", "utf8");
 const js = fs.readFileSync("app.js", "utf8");
 
 test("all primary destinations have both navigation links and page containers", () => {
-  for (const name of ["overview", "skills", "organizations", "machines", "maintenance", "faults", "marketplace", "settings"]) {
+  for (const name of ["overview", "skills", "organizations", "machines", "maintenance", "faults", "rfqs", "marketplace", "settings"]) {
     assert.ok(html.includes('data-view="' + name + '"'));
     assert.ok(html.includes('id="view-' + name + '"'));
   }
@@ -53,7 +53,7 @@ test("fault reports support role-aware status transitions", () => {
 });
 test("service worker refreshes the shell and does not intercept cross-origin APIs", () => {
   const sw = fs.readFileSync("sw.js", "utf8");
-  assert.ok(sw.includes("midaan-shell-v4"));
+  assert.ok(sw.includes("midaan-shell-v5"));
   assert.ok(sw.includes("url.origin!==self.location.origin"));
   assert.ok(sw.includes("fetch(request)"));
   assert.ok(sw.includes("if(STATIC.test(url.pathname))"));
@@ -77,7 +77,38 @@ test("maintenance status updates enforce manager or assignee access in the clien
 });
 
 test("HTML element IDs are unique across all workspace pages", () => {
-  const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(match => match[1]);
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   assert.deepEqual([...new Set(duplicates)], [], "duplicate HTML IDs break controls and navigation");
+});
+
+test("dark mode uses high-contrast colors for text, navigation, fields, buttons, and status badges", () => {
+  assert.ok(html.includes("html.theme-dark{color-scheme:dark"));
+  assert.ok(html.includes("html.theme-dark .sidebar{background:#091827"));
+  assert.ok(html.includes("html.theme-dark .field label{color:#d8e3ef"));
+  assert.ok(html.includes("html.theme-dark .field input::placeholder"));
+  assert.ok(html.includes("html.theme-dark .pill.green"));
+  assert.ok(html.includes('id="topThemeToggle"'));
+  assert.ok(js.includes('document.documentElement.style.colorScheme=dark?"dark":"light"'));
+  assert.ok(js.includes('localStorage.setItem("midaan-theme"'));
+});
+test("language preference is stored per account and switches document direction", () => {
+  assert.ok(html.includes('id="languageToggle"'));
+  assert.ok(js.includes('db.from("profiles").upsert({id:currentUserId,preferred_language:currentLanguage}'));
+  assert.ok(js.includes('document.documentElement.dir=currentLanguage==="ar"?"rtl":"ltr"'));
+  assert.ok(js.includes('document.documentElement.lang=currentLanguage'));
+  assert.ok(js.includes("const i18n="));
+});
+
+test("navigation includes all global platform sections", () => {
+  assert.ok(html.includes('data-view="rfqs"'));
+  assert.ok(js.includes('"rfqs"'));
+});
+
+test("language and theme controls are available before sign-in", () => {
+  assert.ok(html.includes('id="authThemeToggle"'));
+  assert.ok(html.includes('id="authLanguageToggle"'));
+  assert.ok(js.includes('$("authThemeToggle").onclick=toggleTheme'));
+  assert.ok(js.includes('$("authLanguageToggle").onclick=changeLanguage'));
+  assert.ok(js.includes('applyTheme(localStorage.getItem("midaan-theme")==="dark")'));
 });

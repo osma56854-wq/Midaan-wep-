@@ -25,12 +25,52 @@
 :focus-visible{outline:3px solid #55a7cf;outline-offset:2px}.field input,.field textarea,.field select{min-height:44px}.report-card{border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0;background:var(--surface)}.report-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.step-list{margin:10px 0 0;padding:0 22px 0 0;color:var(--text)}.step-list li{padding:4px 0}.theme-dark{--bg:#0d1724;--surface:#142337;--surface-2:#1a2b40;--line:#2a3d52;--text:#e6edf5;--ink:#edf4fb;--navy:#e5eff9;--muted:#a6b6c8;--blue:#72b9df;--cyan:#54c0cc;--shadow:0 12px 32px rgba(0,0,0,.18)}.theme-dark .field input,.theme-dark .field textarea,.theme-dark .field select{background:#102034;border-color:#344a61;color:#e6edf5}.theme-dark .btn{background:#1b3048;border-color:#344a61;color:#e6edf5}.theme-dark .btn.primary{background:linear-gradient(135deg,#246b91,#1a5278);color:white}.theme-dark .pill{background:#1b3048;border-color:#344a61;color:#b9c8d8}.theme-dark .empty{background:#142337;border-color:#344a61}.theme-dark .report-card,.theme-dark .card{background:var(--surface)}.theme-dark .field label{color:#c5d3e1}.theme-dark .item{border-color:#2a3d52}.theme-dark .footer{border-color:#2a3d52}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 .marketplace-toolbar{margin-top:12px;gap:10px}.marketplace-offer{border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0;background:var(--surface)}.marketplace-offer .meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.marketplace-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.market-request{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}.marketplace-toolbar .field{min-width:0}@media(max-width:560px){.marketplace-toolbar{grid-template-columns:1fr}.marketplace-toolbar .field{margin-bottom:8px}}
+
+/* High-contrast theme tokens and controls */
+html.theme-dark{color-scheme:dark;--bg:#0b1420;--surface:#142235;--surface-2:#1b2d43;--line:#34495f;--text:#f1f5f9;--ink:#f4f7fb;--navy:#e8f0f8;--muted:#bdc9d7;--blue:#8bc8eb;--cyan:#69d0dc;--success:#63d6b2;--danger:#ff9ca4;--shadow:0 12px 32px rgba(0,0,0,.3)}
+html.theme-dark body{background:var(--bg);color:var(--text)}
+html.theme-dark .sidebar{background:#091827;color:#f8fafc}
+html.theme-dark .nav-link{color:#e5edf6}
+html.theme-dark .nav-link:hover,html.theme-dark .nav-link.active{color:#fff}
+html.theme-dark .brand strong,html.theme-dark .hero h1,html.theme-dark .page-head h2,html.theme-dark .card h2,html.theme-dark .card h3,html.theme-dark .auth-card h1,html.theme-dark .stat .num{color:var(--ink)}
+html.theme-dark .field label{color:#d8e3ef}
+html.theme-dark .field input,html.theme-dark .field textarea,html.theme-dark .field select{background:#0c1a2a;color:#f1f5f9;border-color:#496078}
+html.theme-dark .field input::placeholder,html.theme-dark .field textarea::placeholder{color:#a8b8ca;opacity:1}
+html.theme-dark .field input:focus,html.theme-dark .field textarea:focus,html.theme-dark .field select:focus{background:#10243a;border-color:#8bc8eb;box-shadow:0 0 0 3px rgba(139,200,235,.22)}
+html.theme-dark .field select option{background:#142235;color:#f1f5f9}
+html.theme-dark .btn:not(.primary){background:#20364f;color:#f4f7fb;border-color:#50677f}
+html.theme-dark .btn:not(.primary):hover{background:#29435f;border-color:#83a2bf}
+html.theme-dark .btn.primary{color:#fff}
+html.theme-dark .empty{background:#142235;color:#c8d4e1;border-color:#536a82}
+html.theme-dark .pill{background:#20364f;color:#dbe7f3;border-color:#50677f}
+html.theme-dark .pill.green{background:#123c35;color:#a8f0d9;border-color:#287a68}
+html.theme-dark .pill.gold{background:#44351a;color:#ffe0a1;border-color:#80632e}
+html.theme-dark .pill.red{background:#48252c;color:#ffc0c5;border-color:#87414c}
+html.theme-dark .message{background:#123c35;color:#b8f1df;border-color:#287a68}
+html.theme-dark .message.error{background:#48252c;color:#ffd0d3;border-color:#87414c}
+html.theme-dark .footer{color:#bdc9d7;border-color:#34495f}
+html.theme-dark .user-email,html.theme-dark .muted,html.theme-dark .tiny,html.theme-dark .item p{color:#bdc9d7}
+html.theme-dark .report-card,html.theme-dark .marketplace-offer,html.theme-dark .market-request,html.theme-dark .maintenance-card{background:var(--surface);border-color:var(--line)}
+html.theme-dark .maintenance-card.overdue{background:#3a202b;border-color:#95505c}
+html.theme-dark .step-list{color:#e6edf5}
+html.theme-dark hr{border-color:#34495f!important}
+html[dir="ltr"] body{text-align:left}
+html[dir="ltr"] .nav-link{text-align:left}
+html[dir="ltr"] .step-list{padding:0 0 0 22px}
+html[dir="ltr"] .field{text-align:left}
+html[dir="ltr"] .item-head{direction:ltr}
+html[dir="ltr"] .auth-switch{direction:ltr}
+html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr}
+.top-actions{flex-wrap:wrap}
+@media(max-width:560px){.top-actions{gap:6px}.top-actions .btn{padding:8px 10px;font-size:12px}}
+
+.auth-preferences{display:flex;justify-content:flex-end;gap:8px;margin:-8px 0 16px}
 </style>
 </head>
 <body>
 <div id="authScreen" class="shell auth-wrap">
   <div class="card auth-card">
-    <div class="brand" style="margin-bottom:22px"><div class="mark">م</div><div><strong>MIDAAN</strong><small>شبكة المعرفة والمهارات الصناعية</small></div></div>
+    <div class="brand" style="margin-bottom:22px"><div class="mark">م</div><div><strong>MIDAAN</strong><small>شبكة المعرفة والمهارات الصناعية</small></div></div><div class="auth-preferences"><button class="btn" id="authThemeToggle" type="button" aria-pressed="false">الوضع الداكن</button><button class="btn" id="authLanguageToggle" type="button">EN</button></div>
     <h1 id="authTitle">أهلاً بك في مِيدان</h1><p class="muted" id="authSub">سجّل دخولك للوصول إلى مساحة العمل الصناعية.</p>
     <div class="auth-switch"><button class="btn primary" id="showLogin">تسجيل الدخول</button><button class="btn" id="showSignup">إنشاء حساب</button></div>
     <div id="signupName" class="field hidden"><label>الاسم الظاهر</label><input id="displayName" autocomplete="name" placeholder="اسمك أو اسمك المهني"></div>
@@ -52,7 +92,7 @@
 <div id="appScreen" class="shell hidden">
 <header class="top">
  <div class="brand"><div class="mark">م</div><div><strong>MIDAAN</strong><small>المعرفة الصناعية تبدأ من أرض المصنع</small></div></div>
- <div class="top-actions"><span class="user-email" id="userEmail"></span><button class="btn" id="signOut">تسجيل الخروج</button></div>
+ <div class="top-actions"><span class="user-email" id="userEmail"></span><button class="btn" id="topThemeToggle" type="button" aria-pressed="false">الوضع الداكن</button><button class="btn" id="languageToggle" type="button" aria-label="Switch language">EN</button><button class="btn" id="signOut">تسجيل الخروج</button></div>
 </header>
 <div class="app-layout">
 <aside class="sidebar" aria-label="التنقل الرئيسي">
@@ -63,7 +103,8 @@
  <button class="nav-link" data-view="machines"><span class="nav-icon">⚙</span>الماكينات</button>
  <button class="nav-link" data-view="maintenance"><span class="nav-icon">▣</span>الصيانة الوقائية</button>
  <button class="nav-link" data-view="faults"><span class="nav-icon">!</span>بلاغات الأعطال</button>
- <button class="nav-link" data-view="marketplace"><span class="nav-icon">⇄</span>السوق الصناعي</button>
+ <button class="nav-link" data-view="rfqs"><span class="nav-icon">▤</span>طلبات عروض الأسعار</button>
+    <button class="nav-link" data-view="marketplace"><span class="nav-icon">⇄</span>السوق الصناعي</button>
  <button class="nav-link" data-view="settings"><span class="nav-icon">☷</span>الإعدادات</button>
  <div class="side-label" style="margin-top:18px">إدارة المنصة</div>
  <div style="padding:8px 12px;color:#9bb0c3;font-size:11px;line-height:1.8">تظهر هنا الخدمات المتاحة لحسابك. الأقسام غير المفعّلة لن تعرض وظائف وهمية.</div>
@@ -140,6 +181,48 @@
  <div class="grid">
   <div class="card wide"><div class="page-head"><div><h3>سجل البلاغات</h3><p>البلاغات مرئية فقط لأعضاء المنشأة المصرح لهم.</p></div><select id="faultFilter" aria-label="تصفية البلاغات"><option value="all">كل الحالات</option><option value="open">مفتوحة</option><option value="investigating">قيد الفحص</option><option value="resolved">تم الحل</option><option value="closed">مغلقة</option></select></div><div id="faultList" aria-live="polite"><div class="empty">جاري تحميل البلاغات...</div></div></div>
   <div class="card side"><h3>تسجيل بلاغ جديد</h3><div class="field"><label for="faultOrg">المنشأة *</label><select id="faultOrg"></select></div><div class="field"><label for="faultMachine">الماكينة (اختياري)</label><select id="faultMachine"><option value="">بدون ماكينة محددة</option></select></div><div class="field"><label for="faultTitle">عنوان العطل *</label><input id="faultTitle" maxlength="180" placeholder="مثال: ارتفاع حرارة زيت الهيدروليك"></div><div class="field"><label for="faultDescription">وصف العطل *</label><textarea id="faultDescription" maxlength="4000" placeholder="اكتب الأعراض ووقت ظهورها وما تم ملاحظته دون تنفيذ إجراء خطر."></textarea></div><div class="field"><label for="faultSeverity">الأولوية</label><select id="faultSeverity"><option value="low">منخفضة</option><option value="medium" selected>متوسطة</option><option value="high">مرتفعة</option><option value="critical">حرجة</option></select></div><button class="btn primary" id="createFaultReport" style="width:100%">إرسال البلاغ</button><p class="tiny">في الحالات الحرجة، اتبع خطة الطوارئ المعتمدة بالمصنع ولا تعتمد على التطبيق كبديل للاستجابة الفورية.</p></div>
+ </div>
+</section>
+
+
+<section class="view" id="view-rfqs">
+ <div class="page-head"><div><h2>طلبات عروض الأسعار</h2><p>المصانع تنشر احتياجاتها، والموردون ومقدمو الخدمات يقدمون عروضًا قابلة للمقارنة.</p></div></div>
+ <div class="grid">
+  <div class="card wide">
+   <div class="item-head"><div><h3>طلبات مفتوحة من السوق</h3><p class="tiny">تصفح الاحتياجات الصناعية المنشورة وقدم عرضك المناسب.</p></div><button class="btn" id="refreshRfqs">تحديث</button></div>
+   <div class="two">
+    <div class="field"><label for="rfqSearch">بحث</label><input id="rfqSearch" maxlength="100" placeholder="ابحث في الطلبات الصناعية"></div>
+    <div class="field"><label for="rfqCategoryFilter">التخصص</label><select id="rfqCategoryFilter"><option value="">كل التخصصات</option><option value="plastic_injection">حقن البلاستيك</option><option value="mold_maintenance">القوالب</option><option value="hydraulic">الهيدروليك</option><option value="electrical_control">الكهرباء والتحكم</option><option value="mechanical">الصيانة الميكانيكية</option><option value="lathe_milling">الخراطة والفرازة</option><option value="spare_parts">قطع الغيار</option><option value="general_maintenance">الصيانة العامة</option><option value="other">أخرى</option></select></div>
+   </div>
+   <div id="rfqList" aria-live="polite"><div class="empty">جاري تحميل الطلبات...</div></div>
+  </div>
+  <div class="card side">
+   <h3>انشر احتياج مصنعك</h3>
+   <p class="tiny">اكتب المواصفات بوضوح لتسهيل وصول عروض مناسبة. لا تضع بيانات سرية أو رسومات ملكية في وصف عام.</p>
+   <div class="field"><label for="rfqOrg">المنشأة *</label><select id="rfqOrg"></select></div>
+   <div class="field"><label for="rfqTitle">عنوان الاحتياج *</label><input id="rfqTitle" maxlength="160" placeholder="مثال: توريد خامة PP لخط إنتاج"></div>
+   <div class="field"><label for="rfqCategory">التخصص</label><select id="rfqCategory"><option value="plastic_injection">حقن البلاستيك</option><option value="mold_maintenance">القوالب</option><option value="hydraulic">الهيدروليك</option><option value="electrical_control">الكهرباء والتحكم</option><option value="mechanical">الصيانة الميكانيكية</option><option value="lathe_milling">الخراطة والفرازة</option><option value="spare_parts">قطع الغيار</option><option value="general_maintenance">الصيانة العامة</option><option value="other">أخرى</option></select></div>
+   <div class="field"><label for="rfqDescription">المواصفات والتفاصيل *</label><textarea id="rfqDescription" maxlength="3000" placeholder="المواصفات الفنية، الكمية، الجودة المطلوبة، شروط التسليم..."></textarea></div>
+   <div class="two">
+    <div class="field"><label for="rfqQuantity">الكمية (اختياري)</label><input id="rfqQuantity" type="number" min="0.001" step="0.001"></div>
+    <div class="field"><label for="rfqUnit">وحدة القياس</label><input id="rfqUnit" maxlength="24" placeholder="قطعة / كجم / ساعة"></div>
+   </div>
+   <div class="field"><label for="rfqTargetDate">موعد الاحتياج (اختياري)</label><input id="rfqTargetDate" type="date"></div>
+   <button class="btn primary" id="createRfq" style="width:100%">نشر طلب عروض الأسعار</button>
+   <div class="message" id="rfqMessage" role="status"></div>
+  </div>
+  <div class="card full"><h3>عروضي المرسلة</h3><div id="myRfqQuotes" aria-live="polite"><div class="empty">لم تقدم عروضًا بعد.</div></div></div>
+ </div>
+ <div class="card hidden" id="rfqQuotePanel">
+  <h3>تقديم عرض سعر</h3><p id="rfqQuoteTitle" class="muted"></p><input id="quoteRfqId" type="hidden">
+  <div class="two">
+   <div class="field"><label for="quoteAmount">السعر *</label><input id="quoteAmount" type="number" min="0.01" step="0.01"></div>
+   <div class="field"><label for="quoteCurrency">العملة *</label><input id="quoteCurrency" maxlength="3" placeholder="EGP / SAR / USD"></div>
+   <div class="field"><label for="quoteLeadDays">مدة التنفيذ بالأيام</label><input id="quoteLeadDays" type="number" min="0" max="3650" value="7"></div>
+  </div>
+  <div class="field"><label for="quoteNotes">تفاصيل العرض *</label><textarea id="quoteNotes" maxlength="2000" placeholder="نطاق العرض، الاستثناءات، الضمان، مدة صلاحية السعر..."></textarea></div>
+  <div class="form-actions"><button class="btn primary" id="submitRfqQuote">إرسال العرض</button><button class="btn" id="cancelRfqQuote">إلغاء</button></div>
+  <div class="message" id="quoteMessage" role="status"></div>
  </div>
 </section>
 
