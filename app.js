@@ -71,31 +71,28 @@ $("saveSkill").onclick=async()=>{
     if(files.length){
       const {data:{user}}=await db.auth.getUser();
       if(!user?.id)throw new Error("تعذر التحقق من المستخدم لرفع المرفقات. المهارة محفوظة كمسودة دون مرفقات.");
-      const uploadedPaths=[],metadataPaths=[];
       try{
-        for(const file of files){
-          const ext=(file.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,8)||"bin";
-          const path=orgId+"/"+user.id+"/"+created.id+"/"+crypto.randomUUID()+"."+ext;
-          const {error:uploadError}=await db.storage.from("skill-evidence").upload(path,file,{contentType:file.type,upsert:false});
-          if(uploadError)throw new Error("تعذر رفع الملف "+file.name+": "+uploadError.message);
-          uploadedPaths.push(path);
-          const mediaType=file.type.startsWith("image/")?"image":file.type.startsWith("video/")?"video":"document";
-          const {error:mediaError}=await db.from("skill_media").insert({skill_id:created.id,uploaded_by:user.id,storage_path:path,media_type:mediaType,caption:file.name});
-          if(mediaError)throw new Error("تم رفع الملف "+file.name+" لكن تعذر ربطه بسجل المهارة: "+mediaError.message);
-          metadataPaths.push(path);
-        }
+        await window.MidaanSkillUploads.uploadWithRollback(
+          files,
+          async file=>{
+            const ext=(file.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,8)||"bin";
+            const path=orgId+"/"+user.id+"/"+created.id+"/"+crypto.randomUUID()+"."+ext;
+            const {error:uploadError}=await db.storage.from("skill-evidence").upload(path,file,{contentType:file.type,upsert:false});
+            if(uploadError)throw new Error("تعذر رفع الملف "+file.name+": "+uploadError.message);
+            const mediaType=file.type.startsWith("image/")?"image":file.type.startsWith("video/")?"video":"document";
+            return {path,metadata:{skill_id:created.id,uploaded_by:user.id,storage_path:path,media_type:mediaType,caption:file.name}};
+          },
+          async rows=>{
+            const {error:mediaError}=await db.from("skill_media").insert(rows);
+            if(mediaError)throw new Error("تم رفع الملفات لكن تعذر حفظ بيانات المرفقات: "+mediaError.message);
+          },
+          async paths=>{
+            const {error:removeError}=await db.storage.from("skill-evidence").remove(paths);
+            if(removeError)throw removeError;
+          }
+        );
       }catch(uploadFailure){
-        const cleanupFailures=[];
-        if(metadataPaths.length){
-          const {error:deleteRowsError}=await db.from("skill_media").delete().in("storage_path",metadataPaths);
-          if(deleteRowsError)cleanupFailures.push("تعذر حذف بعض سجلات المرفقات");
-        }
-        if(uploadedPaths.length){
-          const {error:removeFilesError}=await db.storage.from("skill-evidence").remove(uploadedPaths);
-          if(removeFilesError)cleanupFailures.push("تعذر حذف بعض الملفات المرفوعة");
-        }
-        const cleanupNote=cleanupFailures.length?" تنبيه: "+cleanupFailures.join(" و")+". يلزم فحص المرفقات يدويًا.":" تم تنظيف الملفات وسجلات المرفقات التي رُفعت في هذه المحاولة.";
-        throw new Error(uploadFailure.message+" المهارة نفسها ما زالت محفوظة كمسودة دون اكتمال المرفقات."+cleanupNote);
+        throw new Error(uploadFailure.message+" المهارة نفسها ما زالت محفوظة كمسودة دون اكتمال المرفقات.");
       }
     }
     $("skillTitle").value="";$("skillSummary").value="";$("skillSteps").value="";$("skillFiles").value="";
