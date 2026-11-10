@@ -18,7 +18,8 @@ jobs:
         with:
           node-version: 22
       - name: Check JavaScript syntax
-        run: node --check app.js
+        run: |
+          node --check app.js
           node --check skill-upload-utils.js
       - name: Test navigation regression checks
         run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs
