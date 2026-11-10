@@ -5,6 +5,8 @@ const fs = require("node:fs");
 const html = fs.readFileSync("index.html", "utf8");
 const js = fs.readFileSync("app.js", "utf8");
 const migration = fs.readFileSync("supabase/migrations/20261110190000_global_industrial_marketplace.sql", "utf8");
+const publishFix = fs.readFileSync("supabase/migrations/20261110191000_require_public_profile_to_publish_offer.sql", "utf8");
+const policyOptimization = fs.readFileSync("supabase/migrations/20261110192000_optimize_marketplace_request_policies.sql", "utf8");
 
 test("marketplace page provides professional profiles, service offers, and request inboxes", () => {
   for (const id of ["view-marketplace","marketplaceList","marketProfileName","marketProfessionalType","marketHeadline","marketCountryCode","marketCity","marketPublic","saveMarketProfile","offerTitle","offerDescription","createServiceOffer","requestOrg","requestMessage","submitServiceRequest","incomingRequests","outgoingRequests"]) {
@@ -36,8 +38,8 @@ test("marketplace tables enforce authenticated access and row-level security", (
   assert.ok(migration.includes("professional_profiles_select_visible"));
   assert.ok(migration.includes("service_offers_select_visible"));
   assert.ok(migration.includes("service_requests_select_participants"));
-  assert.ok(migration.includes("service_requests_offer_created"));
-  assert.ok(migration.includes("service_requests_update_status_participant"));
+  assert.ok(policyOptimization.includes("service_requests_offer_created"));
+  assert.ok(policyOptimization.includes("service_requests_update_status_participant"));
 });
 
 test("service requests are checked against a published offer and the requester's active organization membership", () => {
@@ -46,6 +48,7 @@ test("service requests are checked against a published offer and the requester's
   assert.ok(migration.includes("m.status = 'active'"));
   assert.ok(migration.includes("prepare_service_request"));
   assert.ok(migration.includes("new.provider_id := v_provider_id"));
+  assert.ok(publishFix.includes("p.is_public = true"));
 });
 
 test("marketplace actions are connected to real Supabase queries", () => {
