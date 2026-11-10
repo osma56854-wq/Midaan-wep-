@@ -40,7 +40,7 @@ function statusLabel(s){return ({draft:"مسودة",submitted:"مرسلة للم
 function safetyLabel(s){return ({normal:"عادي",caution:"احتياط",high:"مرتفع",critical:"حرج"})[s]||s}
 function pillClass(s){return s==="approved"?"green":s==="critical"||s==="high"?"red":"gold"}
 async function api(action,payload={}){const {data:{session}}=await db.auth.getSession();if(!session)throw new Error("انتهت الجلسة. سجّل الدخول مرة أخرى.");const response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+session.access_token,"apikey":SUPABASE_KEY},body:JSON.stringify({action,...payload})});const body=await response.json().catch(()=>({error:"استجابة غير مفهومة من الخادم"}));if(!response.ok)throw new Error(body.error||"تعذر تنفيذ الطلب");return body.data}
-async function loadAll(){const {data:{user}}=await db.auth.getUser();currentUserId=user?.id||null;$("userEmail").textContent=user?.email||"";const orgData=await api("my_organizations");organizations=(orgData||[]).map(x=>({...x.organizations,memberRole:x.role})).filter(x=>x.id);const cat=await db.from("categories").select("id,slug,name_ar").eq("is_active",true).order("sort_order");if(cat.error)throw cat.error;categories=cat.data||[];renderOrganizations();renderOrgSelects();renderCategories();await loadSettings();await Promise.all([loadSkills(),loadMachines(),loadFaultReports()]);await loadMaintenance();}
+async function loadAll(){const {data:{user}}=await db.auth.getUser();currentUserId=user?.id||null;$("userEmail").textContent=user?.email||"";const orgData=await api("my_organizations");organizations=(orgData||[]).map(x=>({...x.organizations,memberRole:x.role})).filter(x=>x.id);const cat=await db.from("categories").select("id,slug,name_ar").eq("is_active",true).order("sort_order");if(cat.error)throw cat.error;categories=cat.data||[];renderOrganizations();renderOrgSelects();renderCategories();await loadSettings();await Promise.all([loadSkills(),loadMachines(),loadFaultReports()]);await loadMaintenance();await loadMarketplace();}
 function renderOrganizations(){const target=$("orgList");target.innerHTML=organizations.length?organizations.map(o=>'<div class="item"><div class="item-head"><div><h3>'+escapeHtml(o.name)+'</h3><div class="tiny">'+escapeHtml(o.industry||"حقن البلاستيك")+' · '+escapeHtml(o.country_code||"EG")+'</div></div><span class="pill green">نشطة</span></div></div>').join(""):'<div class="empty">لا توجد منشآت بعد. أنشئ منشأتك الأولى من النموذج المجاور.</div>';$("statOrgs").textContent=organizations.length}
 function renderOrgSelects(){["skillOrg","machineOrg","faultOrg","maintenanceOrg","maintenanceListOrg"].forEach(id=>{const s=$(id);if(!s)return;const old=s.value;s.innerHTML=organizations.map(o=>'<option value="'+o.id+'">'+escapeHtml(o.name)+'</option>').join("");if(old&&organizations.some(o=>o.id===old))s.value=old});if($("faultOrg")&&organizations.length)loadFaultMachines().catch(e=>showMessage("globalMessage",e.message,true))}
 function renderCategories(){$("skillCategory").innerHTML='<option value="">بدون تصنيف</option>'+categories.map(c=>'<option value="'+c.id+'">'+escapeHtml(c.name_ar)+'</option>').join("")}
@@ -49,8 +49,166 @@ function skillCard(s){const steps=(s.skill_steps||[]).slice().sort((a,b)=>a.step
 function renderSkillLists(){const q=$("skillSearch").value.trim().toLowerCase();const rows=allSkills.filter(s=>(s.title+" "+(s.summary||"")).toLowerCase().includes(q));$("skillList").innerHTML=rows.length?rows.map(skillCard).join(""):'<div class="empty">لا توجد نتائج مطابقة. أضف أول مهارة من النموذج.</div>';const recent=allSkills.slice(0,4);$("recentSkills").innerHTML=recent.length?recent.map(skillCard).join(""):'<div class="empty">لم تُسجّل مهارات بعد. ابدأ بتوثيق أول خبرة عملية.</div>'}
 function updateStats(){$("statSkills").textContent=allSkills.length;$("statDrafts").textContent=allSkills.filter(s=>s.status==="draft").length;$("statFaults").textContent=faultReports.filter(r=>r.status==="open"||r.status==="investigating").length;$("statMaintenanceDue").textContent=maintenanceTasks.filter(t=>["scheduled","in_progress"].includes(t.status)&&new Date(t.due_at)<new Date()).length}
 async function loadMachines(){const orgIds=organizations.map(o=>o.id);if(!orgIds.length){machines=[];$("machineList").innerHTML='<div class="empty">أنشئ منشأة أولًا.</div>';return}const {data,error}=await db.from("machines").select("id,organization_id,name,manufacturer,model,machine_type,created_at").in("organization_id",orgIds).order("created_at",{ascending:false});if(error)throw error;machines=data||[];const orgId=$("machineOrg").value;const rows=machines.filter(m=>m.organization_id===orgId);$("machineList").innerHTML=rows.length?rows.map(m=>'<div class="item"><div class="item-head"><div><h3>'+escapeHtml(m.name)+'</h3><div class="tiny">'+escapeHtml([m.manufacturer,m.model].filter(Boolean).join(" · ")||"بيانات إضافية غير مسجلة")+'</div></div><span class="pill">ماكينة حقن</span></div></div>').join(""):'<div class="empty">لا توجد ماكينات مسجلة لهذه المنشأة.</div>';if($("faultOrg"))await loadFaultMachines()}
-const validViews=["overview","skills","organizations","machines","maintenance","faults","settings"];
-const viewMeta={overview:["الرئيسية","نظرة سريعة على نشاطك الصناعي في مِيدان"],skills:["مكتبة المهارات","وثّق خبرات فريقك واجعلها معرفة منظمة قابلة للمراجعة"],organizations:["المنشآت","إدارة المصانع والورش المرتبطة بحسابك"],machines:["الماكينات","سجل معدات المصنع واربطها بسياق العمل"],maintenance:["الصيانة الوقائية","خطط أعمال الصيانة وتابع المواعيد والتنفيذ"],faults:["بلاغات الأعطال","سجل البلاغات الفنية وتابع الأولويات والحالات"],settings:["إعدادات الحساب","بياناتك المهنية وتفضيلات الأمان والمظهر"]};
+
+let professionalProfile=null,marketOffers=[],incomingServiceRequests=[],outgoingServiceRequests=[];
+const marketCategoryLabels={plastic_injection:"ماكينات حقن البلاستيك",mold_maintenance:"صيانة القوالب",hydraulic:"هيدروليك",electrical_control:"كهرباء وتحكم",mechanical:"صيانة ميكانيكية",lathe_milling:"خراطة وفرازة",spare_parts:"قطع غيار",general_maintenance:"صيانة عامة",other:"خدمات أخرى"};
+const professionalTypeLabels={technician:"فني",engineer:"مهندس",service_company:"شركة خدمات صناعية"};
+const requestStatusLabels={new:"جديد",accepted:"تم القبول",declined:"مرفوض",cancelled:"ملغي",completed:"مكتمل"};
+function splitMarketValues(value,maxItems,maxLength){return String(value||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,maxItems).map(x=>x.slice(0,maxLength))}
+function marketPriceLabel(offer){if(offer.price_type==="quote")return "السعر حسب الاتفاق";const amount=Number(offer.price_amount).toLocaleString(undefined,{maximumFractionDigits:2});return amount+" "+offer.currency_code+(offer.price_type==="hourly"?" / ساعة":"")}
+function marketLocation(country,city){return [city,country].filter(Boolean).join(" · ")||"الموقع غير محدد"}
+async function loadMarketplace(){
+  if(!currentUserId)return;
+  const {data:{user}}=await db.auth.getUser();
+  const {data:profile,error:profileError}=await db.from("professional_profiles").select("user_id,display_name,professional_type,headline,country_code,city,bio,years_experience,languages,specialties,is_public").eq("user_id",currentUserId).maybeSingle();
+  if(profileError)throw profileError;
+  professionalProfile=profile||null;
+  $("marketProfileName").value=profile?.display_name||user?.user_metadata?.display_name||"";
+  $("marketProfessionalType").value=profile?.professional_type||"technician";
+  $("marketHeadline").value=profile?.headline||"";
+  $("marketCountryCode").value=profile?.country_code||organizations[0]?.country_code||"EG";
+  $("marketCity").value=profile?.city||"";
+  $("marketExperience").value=String(profile?.years_experience??0);
+  $("marketBio").value=profile?.bio||"";
+  $("marketLanguages").value=(profile?.languages||["ar"]).join(", ");
+  $("marketSpecialties").value=(profile?.specialties||[]).join(", ");
+  $("marketPublic").checked=!!profile?.is_public;
+  const orgSelect=$("requestOrg"),oldOrg=orgSelect.value;
+  orgSelect.innerHTML=organizations.map(o=>'<option value="'+escapeHtml(o.id)+'">'+escapeHtml(o.name)+'</option>').join("");
+  if(oldOrg&&organizations.some(o=>o.id===oldOrg))orgSelect.value=oldOrg;
+  const {data:offers,error:offersError}=await db.from("service_offers").select("id,provider_id,title,description,category,country_code,city,service_mode,price_type,currency_code,price_amount,status,created_at,professional_profiles(display_name,professional_type,headline,is_public)").order("created_at",{ascending:false}).limit(100);
+  if(offersError)throw offersError;
+  marketOffers=offers||[];
+  const {data:incoming,error:incomingError}=await db.from("service_requests").select("id,offer_id,organization_id,requested_by,provider_id,organization_name,organization_country_code,message,status,created_at,service_offers(title)").eq("provider_id",currentUserId).order("created_at",{ascending:false}).limit(50);
+  if(incomingError)throw incomingError;
+  incomingServiceRequests=incoming||[];
+  const {data:outgoing,error:outgoingError}=await db.from("service_requests").select("id,offer_id,organization_id,requested_by,provider_id,organization_name,organization_country_code,message,status,created_at,service_offers(title)").eq("requested_by",currentUserId).order("created_at",{ascending:false}).limit(50);
+  if(outgoingError)throw outgoingError;
+  outgoingServiceRequests=outgoing||[];
+  renderMarketplace();
+  renderServiceRequests();
+}
+function renderMarketplace(){
+  const query=($("marketSearch").value||"").trim().toLowerCase();
+  const category=$("marketCategoryFilter").value;
+  const country=($("marketCountryFilter").value||"").trim().toUpperCase();
+  const rows=marketOffers.filter(o=>{
+    const p=o.professional_profiles||{};
+    const searchable=[o.title,o.description,o.city,o.country_code,marketCategoryLabels[o.category],p.display_name,p.headline].join(" ").toLowerCase();
+    return (o.status==="published"||o.provider_id===currentUserId)
+      &&(!query||searchable.includes(query))
+      &&(!category||o.category===category)
+      &&(!country||o.country_code===country);
+  });
+  $("marketplaceList").innerHTML=rows.length?rows.map(o=>{
+    const p=o.professional_profiles||{},mine=o.provider_id===currentUserId;
+    const status=o.status==="published"?"منشور":o.status==="paused"?"متوقف مؤقتًا":"مسودة";
+    const action=mine?'<button class="btn" data-offer-id="'+escapeHtml(o.id)+'" data-offer-status="'+(o.status==="published"?"paused":"published")+'">'+(o.status==="published"?"إيقاف العرض":"نشر العرض")+'</button>':(o.status==="published"?'<button class="btn primary" data-request-offer="'+escapeHtml(o.id)+'">طلب الخدمة</button>':"");
+    return '<article class="marketplace-offer"><div class="item-head"><div><h3>'+escapeHtml(o.title)+'</h3><div class="tiny">'+escapeHtml(p.display_name||"مقدم خدمة")+' · '+escapeHtml(professionalTypeLabels[p.professional_type]||"مقدم خدمة")+'</div></div><span class="pill '+(o.status==="published"?"green":"gold")+'">'+status+'</span></div><div class="meta"><span class="pill">'+escapeHtml(marketCategoryLabels[o.category]||o.category)+'</span><span class="pill">'+escapeHtml(marketLocation(o.country_code,o.city))+'</span><span class="pill">'+(o.service_mode==="remote"?"عن بُعد":o.service_mode==="both"?"عن بُعد أو بالموقع":"في موقع العميل")+'</span><span class="pill">'+escapeHtml(marketPriceLabel(o))+'</span></div><p>'+escapeHtml(o.description)+'</p><div class="marketplace-actions">'+action+'</div></article>';
+  }).join(""):'<div class="empty">لا توجد عروض مطابقة حاليًا. يمكنك تعديل البحث أو نشر أول عرض خدمة.</div>';
+}
+function renderServiceRequests(){
+  $("incomingRequests").innerHTML=incomingServiceRequests.length?incomingServiceRequests.map(r=>{
+    const action=r.status==="new"?'<button class="btn" data-request-id="'+escapeHtml(r.id)+'" data-request-status="accepted">قبول</button><button class="btn" data-request-id="'+escapeHtml(r.id)+'" data-request-status="declined">رفض</button>':r.status==="accepted"?'<button class="btn" data-request-id="'+escapeHtml(r.id)+'" data-request-status="completed">تأكيد الإكمال</button>':"";
+    return '<article class="market-request"><div class="item-head"><strong>'+escapeHtml(r.organization_name||"منشأة")+'</strong><span class="pill">'+escapeHtml(requestStatusLabels[r.status]||r.status)+'</span></div><div class="tiny">'+escapeHtml(r.service_offers?.title||"خدمة صناعية")+' · '+escapeHtml(r.organization_country_code||"")+'</div><p>'+escapeHtml(r.message)+'</p><div class="marketplace-actions">'+action+'</div></article>';
+  }).join(""):'<div class="empty">لا توجد طلبات واردة إلى عروضك.</div>';
+  $("outgoingRequests").innerHTML=outgoingServiceRequests.length?outgoingServiceRequests.map(r=>{
+    const action=r.status==="new"?'<button class="btn" data-request-id="'+escapeHtml(r.id)+'" data-request-status="cancelled">إلغاء الطلب</button>':"";
+    return '<article class="market-request"><div class="item-head"><strong>'+escapeHtml(r.service_offers?.title||"خدمة صناعية")+'</strong><span class="pill">'+escapeHtml(requestStatusLabels[r.status]||r.status)+'</span></div><div class="tiny">'+new Date(r.created_at).toLocaleDateString()+'</div><p>'+escapeHtml(r.message)+'</p><div class="marketplace-actions">'+action+'</div></article>';
+  }).join(""):'<div class="empty">لم ترسل طلبات خدمات بعد.</div>';
+}
+$("saveMarketProfile").onclick=async()=>{
+  const display_name=$("marketProfileName").value.trim(),professional_type=$("marketProfessionalType").value,headline=$("marketHeadline").value.trim(),country_code=$("marketCountryCode").value.trim().toUpperCase(),city=$("marketCity").value.trim(),bio=$("marketBio").value.trim(),years_experience=Number($("marketExperience").value),languages=splitMarketValues($("marketLanguages").value,8,20),specialties=splitMarketValues($("marketSpecialties").value,12,80),is_public=$("marketPublic").checked,b=$("saveMarketProfile");
+  if(display_name.length<2||headline.length<4)throw new Error("اكتب الاسم المهني والتخصص بشكل صحيح.");
+  if(!/^[A-Z]{2}$/.test(country_code))throw new Error("رمز الدولة يجب أن يكون حرفين كبيرين مثل EG أو SA.");
+  if(!Number.isInteger(years_experience)||years_experience<0||years_experience>60)throw new Error("سنوات الخبرة يجب أن تكون من 0 إلى 60.");
+  if(!languages.length)throw new Error("أضف لغة واحدة على الأقل.");
+  b.disabled=true;
+  try{
+    const {error}=await db.from("professional_profiles").upsert({user_id:currentUserId,display_name,professional_type,headline,country_code,city:city||null,bio:bio||null,years_experience,languages,specialties,is_public},{onConflict:"user_id"});
+    if(error)throw error;
+    await loadMarketplace();
+    showMessage("marketProfileMessage","تم حفظ الملف المهني.");
+  }catch(e){showMessage("marketProfileMessage",e.message||"تعذر حفظ الملف المهني.",true)}
+  finally{b.disabled=false}
+};
+$("createServiceOffer").onclick=async()=>{
+  const title=$("offerTitle").value.trim(),description=$("offerDescription").value.trim(),category=$("offerCategory").value,service_mode=$("offerServiceMode").value,price_type=$("offerPriceType").value,status=$("offerStatus").value,currency_code=$("offerCurrencyCode").value.trim().toUpperCase(),priceRaw=$("offerPriceAmount").value,price_amount=priceRaw===""?null:Number(priceRaw),b=$("createServiceOffer");
+  if(!professionalProfile)throw new Error("احفظ ملفك المهني أولًا قبل إضافة عرض خدمة.");
+  if(title.length<4||description.length<20)throw new Error("اكتب عنوانًا ووصفًا واضحًا للخدمة (20 حرفًا على الأقل).");
+  if(status==="published"&&!professionalProfile.is_public)throw new Error("فعّل إظهار ملفك المهني أولًا حتى تتمكن من نشر العرض.");
+  if(price_type==="quote"&&(price_amount!==null||currency_code))throw new Error("اترك السعر والعملة فارغين عند اختيار حسب الاتفاق.");
+  if(price_type!=="quote"&&(!Number.isFinite(price_amount)||price_amount<0||!/^[A-Z]{3}$/.test(currency_code)))throw new Error("أدخل سعرًا صحيحًا ورمز عملة من 3 أحرف مثل EGP أو SAR أو USD.");
+  b.disabled=true;
+  try{
+    const {error}=await db.from("service_offers").insert({provider_id:currentUserId,title,description,category,country_code:professionalProfile.country_code,city:professionalProfile.city,service_mode,price_type,currency_code:price_type==="quote"?null:currency_code,price_amount:price_type==="quote"?null:price_amount,status});
+    if(error)throw error;
+    $("offerTitle").value="";$("offerDescription").value="";$("offerPriceAmount").value="";$("offerCurrencyCode").value="";
+    await loadMarketplace();
+    showMessage("offerMessage","تم حفظ عرض الخدمة.");
+  }catch(e){showMessage("offerMessage",e.message||"تعذر حفظ عرض الخدمة.",true)}
+  finally{b.disabled=false}
+};
+$("marketplaceList").addEventListener("click",async event=>{
+  const requestButton=event.target.closest("[data-request-offer]");
+  if(requestButton){
+    const offer=marketOffers.find(o=>o.id===requestButton.dataset.requestOffer);
+    if(!offer)return;
+    if(!organizations.length){showMessage("globalMessage","أنشئ منشأة أولًا حتى تتمكن من طلب خدمة باسمها.",true);return}
+    $("requestOfferId").value=offer.id;
+    $("requestOfferTitle").textContent="الخدمة: "+offer.title;
+    $("requestOrg").value=organizations[0].id;
+    $("serviceRequestPanel").classList.remove("hidden");
+    $("serviceRequestPanel").scrollIntoView({behavior:"smooth",block:"start"});
+    return;
+  }
+  const offerButton=event.target.closest("[data-offer-id][data-offer-status]");
+  if(offerButton){
+    offerButton.disabled=true;
+    try{
+      const {error}=await db.from("service_offers").update({status:offerButton.dataset.offerStatus}).eq("id",offerButton.dataset.offerId);
+      if(error)throw error;
+      await loadMarketplace();
+      showMessage("globalMessage","تم تحديث حالة العرض.");
+    }catch(e){showMessage("globalMessage",e.message||"تعذر تحديث العرض.",true)}
+    finally{offerButton.disabled=false}
+  }
+});
+$("submitServiceRequest").onclick=async()=>{
+  const offer=marketOffers.find(o=>o.id===$("requestOfferId").value),organization_id=$("requestOrg").value,message=$("requestMessage").value.trim(),b=$("submitServiceRequest");
+  if(!offer||!organization_id)throw new Error("اختر عرض الخدمة والمنشأة.");
+  if(message.length<10)throw new Error("اكتب تفاصيل الطلب في 10 أحرف على الأقل.");
+  b.disabled=true;
+  try{
+    const {error}=await db.from("service_requests").insert({offer_id:offer.id,organization_id,requested_by:currentUserId,provider_id:offer.provider_id,message});
+    if(error)throw error;
+    $("requestMessage").value="";$("serviceRequestPanel").classList.add("hidden");
+    await loadMarketplace();
+    showMessage("globalMessage","تم إرسال طلب الخدمة إلى مقدمها.");
+  }catch(e){showMessage("requestMessageStatus",e.message||"تعذر إرسال الطلب.",true)}
+  finally{b.disabled=false}
+};
+$("cancelServiceRequest").onclick=()=>{$("serviceRequestPanel").classList.add("hidden");$("requestMessage").value="";};
+async function updateServiceRequestStatus(button){
+  const next=button.dataset.requestStatus;
+  if(!["accepted","declined","cancelled","completed"].includes(next))return;
+  button.disabled=true;
+  try{
+    const {error}=await db.from("service_requests").update({status:next}).eq("id",button.dataset.requestId);
+    if(error)throw error;
+    await loadMarketplace();
+    showMessage("globalMessage","تم تحديث حالة طلب الخدمة.");
+  }catch(e){showMessage("globalMessage",e.message||"تعذر تحديث الطلب.",true)}
+  finally{button.disabled=false}
+}
+$("incomingRequests").addEventListener("click",event=>{const b=event.target.closest("[data-request-id][data-request-status]");if(b)updateServiceRequestStatus(b)});
+$("outgoingRequests").addEventListener("click",event=>{const b=event.target.closest("[data-request-id][data-request-status]");if(b)updateServiceRequestStatus(b)});
+$("marketSearch").oninput=renderMarketplace;
+$("marketCategoryFilter").onchange=renderMarketplace;
+$("marketCountryFilter").oninput=renderMarketplace;
+
+const validViews=["overview","skills","organizations","machines","maintenance","faults","marketplace","settings"];
+const viewMeta={overview:["الرئيسية","نظرة سريعة على نشاطك الصناعي في مِيدان"],skills:["مكتبة المهارات","وثّق خبرات فريقك واجعلها معرفة منظمة قابلة للمراجعة"],organizations:["المنشآت","إدارة المصانع والورش المرتبطة بحسابك"],machines:["الماكينات","سجل معدات المصنع واربطها بسياق العمل"],maintenance:["الصيانة الوقائية","خطط أعمال الصيانة وتابع المواعيد والتنفيذ"],faults:["بلاغات الأعطال","سجل البلاغات الفنية وتابع الأولويات والحالات"],marketplace:["السوق الصناعي","اعرض خدماتك أو اطلب خدمة صناعية من مقدم موثوق"],settings:["إعدادات الحساب","بياناتك المهنية وتفضيلات الأمان والمظهر"]};
 function activateView(name,{updateUrl=true}={}){
   if(!validViews.includes(name))name="overview";
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));
