@@ -1,4 +1,4 @@
-const CACHE="midaan-shell-v5";
+const CACHE="midaan-shell-v7";
 const FILES=["./","./index.html","./app.js","./skill-upload-utils.js","./manifest.webmanifest","./midaan-icon.svg"];
 const STATIC=/\/(?:index\.html|app\.js|skill-upload-utils\.js|manifest\.webmanifest|midaan-icon\.svg)$/;
 const absolute=path=>new URL(path,self.registration.scope).href;
