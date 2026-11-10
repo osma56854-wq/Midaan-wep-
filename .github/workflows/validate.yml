@@ -29,6 +29,9 @@ jobs:
           test -s app.js
           test -s skill-upload-utils.js
           test -s tests/skill-upload-utils.test.cjs
+          test -s manifest.webmanifest
+          test -s midaan-icon.svg
+          test -s sw.js
           grep -q 'Content-Security-Policy' index.html
           grep -q 'https://lkofveroqcrfehczdlkl.supabase.co' app.js
           grep -q 'sb_publishable_' app.js
