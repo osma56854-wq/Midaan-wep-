@@ -2,27 +2,26 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101918"><meta name="description" content="مِيدان — شبكة المعرفة والمهارات الصناعية">
+<meta name="theme-color" content="#10243a"><meta name="description" content="مِيدان — شبكة المعرفة والمهارات الصناعية">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://lkofveroqcrfehczdlkl.supabase.co wss://lkofveroqcrfehczdlkl.supabase.co https://api.pwnedpasswords.com; img-src 'self' https://lkofveroqcrfehczdlkl.supabase.co data: blob:; media-src 'self' https://lkofveroqcrfehczdlkl.supabase.co blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>مِيدان | MIDAAN</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
-:root{--bg:#101918;--panel:#182523;--panel2:#1d2d29;--line:#30443e;--text:#f1f5ee;--muted:#9fb1a8;--green:#bde6a7;--green2:#8ecb78;--gold:#e9c98b;--red:#ff9d8f;--blue:#9dc7e8}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -10%,#284037 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--green)}
-.shell{max-width:1180px;margin:auto;padding:22px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0 22px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px}.mark{width:44px;height:44px;border-radius:14px;background:var(--green);color:#17231d;display:grid;place-items:center;font-weight:1000;font-size:23px}.brand strong{font-size:21px;letter-spacing:1px}.brand small{display:block;color:var(--muted);font-size:12px}.top-actions{display:flex;align-items:center;gap:10px}.user-email{color:var(--muted);font-size:13px}
-.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 15px;border-radius:11px;font-weight:700}.btn.primary{background:var(--green);color:#16221b;border-color:var(--green)}.btn:disabled{opacity:.5;cursor:wait}
-.hero{padding:36px 0 24px;display:flex;justify-content:space-between;gap:24px;align-items:end}.eyebrow{color:var(--gold);font-size:13px;font-weight:800}.hero h1{font-size:clamp(29px,5vw,48px);line-height:1.2;margin:8px 0}.hero p{color:var(--muted);max-width:650px;margin:0}.hero-mark{font-size:80px;opacity:.14;font-weight:1000;line-height:1}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:17px;padding:19px;min-width:0}.stat{grid-column:span 4}.stat .num{font-size:32px;font-weight:900;color:var(--green);line-height:1.2}.stat .label{color:var(--muted);font-size:13px}.wide{grid-column:span 8}.side{grid-column:span 4}.full{grid-column:1/-1}.card h2{font-size:18px;margin:0 0 14px}.card h3{font-size:16px;margin:0 0 5px}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}
-.tabs{display:flex;gap:8px;overflow:auto;padding:18px 0}.tab{white-space:nowrap;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--muted);padding:9px 14px}.tab.active{background:#2a4037;color:var(--green);border-color:#55745f}
-.view{display:none}.view.active{display:block}
-.field{margin:0 0 13px}.field label{display:block;color:#c7d4cb;font-size:13px;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;background:#101a18;border:1px solid #3a5148;color:var(--text);border-radius:10px;padding:11px 12px;outline:none}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--green2)}.field textarea{min-height:110px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.message{padding:10px 13px;border-radius:10px;margin:12px 0;background:#253a31;color:var(--green);display:none}.message.error{background:#482d2a;color:#ffc0b7}.empty{border:1px dashed #496057;border-radius:12px;padding:20px;text-align:center;color:var(--muted)}
-.item{padding:14px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.item p{color:var(--muted);margin:5px 0 0;white-space:pre-wrap}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:2px 9px;font-size:11px;color:var(--muted);white-space:nowrap}.pill.green{color:var(--green);border-color:#526e55}.pill.gold{color:var(--gold);border-color:#77613d}.pill.red{color:var(--red);border-color:#74483f}
-.auth-wrap{max-width:480px;margin:9vh auto}.auth-card{padding:28px}.auth-card h1{margin:0 0 5px;font-size:30px}.auth-switch{display:flex;gap:8px;margin-bottom:18px}.auth-switch button{flex:1}.hidden{display:none!important}
-.footer{border-top:1px solid var(--line);margin-top:36px;padding:18px 0;color:#82978c;font-size:12px}
-@media(max-width:760px){.shell{padding:15px}.hero{padding:26px 0 18px}.hero-mark{display:none}.stat{grid-column:span 4}.wide,.side{grid-column:1/-1}.two{grid-template-columns:1fr}.user-email{display:none}.top{align-items:flex-start}.top-actions{flex-direction:column;align-items:end}}
-@media(max-width:430px){.stat{grid-column:1/-1}.stat .num{font-size:27px}.brand strong{font-size:18px}}
+:root{color-scheme:light;--ink:#14263b;--navy:#10243a;--navy-2:#193653;--blue:#2e6f9e;--cyan:#36a6b6;--accent:#e6a84b;--bg:#f3f6fa;--surface:#fff;--surface-2:#f7f9fc;--line:#e2e8f0;--text:#18283b;--muted:#718096;--success:#16856b;--danger:#c94b55;--shadow:0 12px 32px rgba(20,38,59,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.75 "Segoe UI",Tahoma,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:var(--blue)}
+.shell{max-width:1440px;margin:auto;padding:24px 30px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0 20px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px}.mark{width:46px;height:46px;border-radius:15px;background:linear-gradient(145deg,#2e789f,#173954);color:white;display:grid;place-items:center;font-weight:1000;font-size:23px;box-shadow:0 8px 18px #1b52742b}.brand strong{font-size:21px;letter-spacing:1.5px;color:var(--navy)}.brand small{display:block;color:var(--muted);font-size:12px}.top-actions{display:flex;align-items:center;gap:12px}.user-email{color:var(--muted);font-size:13px}
+.btn{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 16px;border-radius:12px;font-weight:700;transition:.18s ease;box-shadow:0 2px 5px #14263b08}.btn:hover{transform:translateY(-1px);border-color:#b7c8d9;box-shadow:0 7px 16px #14263b12}.btn.primary{background:linear-gradient(135deg,#23658f,#17466c);color:#fff;border-color:transparent;box-shadow:0 7px 16px #1c52752b}.btn:disabled{opacity:.5;cursor:wait;transform:none}
+.hero{padding:30px 0 24px;display:flex;justify-content:space-between;gap:24px;align-items:center}.eyebrow{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.4px}.hero h1{font-size:clamp(28px,4vw,42px);line-height:1.3;margin:7px 0;color:var(--navy);font-weight:850}.hero p{color:var(--muted);max-width:700px;margin:0}.hero-mark{font-size:70px;color:#d9e5ef;font-weight:1000;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0;box-shadow:var(--shadow)}.stat{grid-column:span 4;display:flex;align-items:center;gap:16px;min-height:106px}.stat:before{content:"";width:4px;height:45px;border-radius:9px;background:linear-gradient(var(--cyan),var(--blue));order:2}.stat .num{font-size:31px;font-weight:900;color:var(--navy);line-height:1.2}.stat .label{color:var(--muted);font-size:13px}.wide{grid-column:span 8}.side{grid-column:span 4}.full{grid-column:1/-1}.card h2{font-size:17px;margin:0 0 15px;color:var(--navy);font-weight:800}.card h3{font-size:15px;margin:0 0 5px;color:var(--ink)}.muted{color:var(--muted)}.tiny{font-size:12px;color:var(--muted)}
+.app-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:20px;align-items:start;margin-top:12px}.sidebar{background:var(--navy);border-radius:20px;padding:15px 12px;position:sticky;top:16px;box-shadow:0 14px 30px #10243a1c}.side-label{color:#91a9bf;font-size:11px;font-weight:800;padding:7px 12px 10px}.nav-link{display:flex;align-items:center;gap:12px;width:100%;text-align:right;background:transparent;border:0;color:#d7e4ef;border-radius:12px;padding:12px 13px;margin:3px 0;font-weight:650;transition:.18s}.nav-link:hover{background:#ffffff12;color:#fff}.nav-link.active{background:linear-gradient(100deg,#2b7198,#1f557a);color:#fff;box-shadow:0 7px 14px #081b2b35}.nav-icon{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;background:#ffffff13;font-size:15px}.workspace{min-width:0}.page-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:2px 0 16px}.page-head h2{margin:0;color:var(--navy);font-size:23px}.page-head p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.view{display:none;animation:pageIn .22s ease}.view.active{display:block}@keyframes pageIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
+.field{margin:0 0 14px}.field label{display:block;color:#40536a;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;background:#fbfcfe;border:1px solid #dce5ee;color:var(--text);border-radius:11px;padding:11px 13px;outline:none;transition:.18s}.field input:focus,.field textarea:focus,.field select:focus{border-color:#4a8eb3;box-shadow:0 0 0 3px #4a8eb31b;background:#fff}.field textarea{min-height:110px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.message{padding:11px 14px;border-radius:12px;margin:12px 0;background:#e7f5f0;color:#126b55;display:none;border:1px solid #c8e9dd}.message.error{background:#fff0f0;color:#a83742;border-color:#f2d2d5}.empty{border:1px dashed #cbd8e5;border-radius:13px;padding:23px;text-align:center;color:var(--muted);background:#fafcff}
+.item{padding:15px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.item p{color:var(--muted);margin:5px 0 0;white-space:pre-wrap}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:11px;color:var(--muted);white-space:nowrap;background:#f8fafc}.pill.green{color:#08785d;border-color:#b9e4d5;background:#edfaf5}.pill.gold{color:#93641d;border-color:#f0dfb9;background:#fff9e9}.pill.red{color:#ad3944;border-color:#f0c8cc;background:#fff2f3}
+.auth-wrap{max-width:490px;margin:8vh auto}.auth-card{padding:30px}.auth-card h1{margin:0 0 5px;font-size:28px;color:var(--navy)}.auth-switch{display:flex;gap:8px;margin-bottom:18px}.auth-switch button{flex:1}.hidden{display:none!important}
+.footer{border-top:1px solid var(--line);margin-top:32px;padding:17px 0;color:#8492a3;font-size:12px}.tabs{display:none}
+@media(max-width:900px){.shell{padding:18px}.app-layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;gap:5px;overflow-x:auto;padding:8px;border-radius:15px}.side-label{display:none}.nav-link{width:auto;min-width:max-content;justify-content:center;padding:10px 13px;margin:0}.nav-icon{width:24px;height:24px}.wide,.side{grid-column:1/-1}}
+@media(max-width:560px){.shell{padding:13px}.hero{padding:23px 0 17px}.hero-mark{display:none}.stat{grid-column:1/-1;min-height:82px}.stat .num{font-size:27px}.user-email{display:none}.top{align-items:center}.top-actions{flex-direction:row}.brand strong{font-size:18px}.brand small{font-size:11px}.card{padding:16px;border-radius:15px}.nav-link{font-size:12px;gap:7px}.nav-icon{display:none}.page-head h2{font-size:20px}.item-head{flex-direction:column}.auth-card{padding:22px}}
 </style>
 </head>
 <body>
@@ -35,7 +34,7 @@
     <div class="field"><label>البريد الإلكتروني</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com"></div>
     <div class="field"><label>كلمة المرور</label><input id="password" type="password" autocomplete="current-password" placeholder="12 حرفًا على الأقل"></div>
     <button class="btn primary" id="authSubmit" style="width:100%">دخول</button>
-    <button type="button" id="forgotPassword" style="display:block;width:100%;margin-top:10px;padding:7px;background:transparent;border:0;color:var(--green);font-weight:700;text-align:center">نسيت كلمة المرور؟</button>
+    <button type="button" id="forgotPassword" style="display:block;width:100%;margin-top:10px;padding:7px;background:transparent;border:0;color:var(--blue);font-weight:700;text-align:center">نسيت كلمة المرور؟</button>
     <div id="recoveryPanel" class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--line)">
       <h3 style="margin:0 0 10px">تعيين كلمة مرور جديدة</h3>
       <div class="field"><label>كلمة المرور الجديدة</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="12 حرفًا على الأقل"></div>
@@ -52,21 +51,26 @@
  <div class="brand"><div class="mark">م</div><div><strong>MIDAAN</strong><small>المعرفة الصناعية تبدأ من أرض المصنع</small></div></div>
  <div class="top-actions"><span class="user-email" id="userEmail"></span><button class="btn" id="signOut">تسجيل الخروج</button></div>
 </header>
-<section class="hero"><div><div class="eyebrow">مساحة العمل الصناعية · النسخة التجريبية</div><h1>حوّل الخبرة إلى<br>معرفة يمكن الرجوع إليها.</h1><p>وثّق المهارات والإجراءات، اربطها بالمنشأة والماكينة، واحتفظ بخبرة فريقك في مكان منظم وقابل للمراجعة.</p></div><div class="hero-mark">مِيدان</div></section>
+<div class="app-layout">
+<aside class="sidebar" aria-label="التنقل الرئيسي">
+ <div class="side-label">مساحة العمل</div>
+ <button class="nav-link active" data-view="overview"><span class="nav-icon">⌂</span>الرئيسية</button>
+ <button class="nav-link" data-view="skills"><span class="nav-icon">▤</span>مكتبة المهارات</button>
+ <button class="nav-link" data-view="organizations"><span class="nav-icon">▦</span>المنشآت</button>
+ <button class="nav-link" data-view="machines"><span class="nav-icon">⚙</span>الماكينات</button>
+ <div class="side-label" style="margin-top:18px">إدارة المنصة</div>
+ <div style="padding:8px 12px;color:#9bb0c3;font-size:11px;line-height:1.8">تظهر هنا الخدمات المتاحة لحسابك. الأقسام غير المفعّلة لن تعرض وظائف وهمية.</div>
+</aside>
+<main class="workspace">
+<div id="globalMessage" class="message"></div>
+
+<section class="view active" id="view-overview"><section class="hero"><div><div class="eyebrow">مساحة العمل الصناعية · النسخة التجريبية</div><h1>حوّل الخبرة إلى<br>معرفة يمكن الرجوع إليها.</h1><p>وثّق المهارات والإجراءات، اربطها بالمنشأة والماكينة، واحتفظ بخبرة فريقك في مكان منظم وقابل للمراجعة.</p></div><div class="hero-mark">مِيدان</div></section>
 <div class="grid">
  <div class="card stat"><div class="num" id="statOrgs">0</div><div class="label">المنشآت المرتبطة بحسابك</div></div>
  <div class="card stat"><div class="num" id="statSkills">0</div><div class="label">المهارات المسجلة</div></div>
  <div class="card stat"><div class="num" id="statDrafts">0</div><div class="label">مسودات قيد التطوير</div></div>
 </div>
-<nav class="tabs">
- <button class="tab active" data-view="overview">نظرة عامة</button>
- <button class="tab" data-view="skills">مكتبة المهارات</button>
- <button class="tab" data-view="organizations">المنشآت</button>
- <button class="tab" data-view="machines">الماكينات</button>
-</nav>
-<div id="globalMessage" class="message"></div>
 
-<section class="view active" id="view-overview">
  <div class="grid">
   <div class="card wide"><h2>آخر المهارات المضافة</h2><div id="recentSkills"><div class="empty">جاري تحميل البيانات...</div></div></div>
   <div class="card side"><h2>ابدأ من هنا</h2><p class="muted">أفضل بداية هي إنشاء منشأتك، ثم إضافة الماكينات، وبعدها توثيق المهارات خطوة بخطوة.</p><button class="btn primary" style="width:100%;margin:5px 0" data-go="organizations">+ إضافة منشأة</button><button class="btn" style="width:100%;margin:5px 0" data-go="skills">+ توثيق مهارة</button><div class="tiny" style="margin-top:14px">مجالات البداية: صيانة القوالب، دوائر التبريد، ماكينات الحقن، فحص الجودة، وتشخيص الأعطال.</div></div>
@@ -74,7 +78,7 @@
  </div>
 </section>
 
-<section class="view" id="view-skills">
+<section class="view" id="view-skills"><div class="page-head"><div><h2>مكتبة المهارات</h2><p>وثّق خبرات فريقك واجعلها معرفة منظمة قابلة للمراجعة</p></div></div>
  <div class="grid">
   <div class="card wide"><h2>مكتبة المهارات</h2><div class="field"><label>المنشأة</label><select id="skillOrg"></select></div><div class="field"><label>بحث في المهارات</label><input id="skillSearch" placeholder="ابحث بالعنوان أو الوصف..."></div><div id="skillList"><div class="empty">لا توجد مهارات بعد.</div></div></div>
   <div class="card side"><h2>توثيق مهارة جديدة</h2>
@@ -91,19 +95,20 @@
  </div>
 </section>
 
-<section class="view" id="view-organizations">
+<section class="view" id="view-organizations"><div class="page-head"><div><h2>المنشآت</h2><p>إدارة المصانع والورش المرتبطة بحسابك</p></div></div>
  <div class="grid">
   <div class="card wide"><h2>منشآتي</h2><div id="orgList"><div class="empty">لا توجد منشآت مرتبطة بالحساب.</div></div></div>
   <div class="card side"><h2>إضافة منشأة</h2><div class="field"><label>اسم المصنع أو الورشة *</label><input id="orgName" maxlength="160" placeholder="مثال: مصنع النيل للبلاستيك"></div><button class="btn primary" id="createOrg" style="width:100%">إنشاء المنشأة</button><p class="tiny">ستصبح مالك المنشأة الأولى ويمكنك تنظيم مهاراتها وماكيناتها من حسابك.</p></div>
  </div>
 </section>
 
-<section class="view" id="view-machines">
+<section class="view" id="view-machines"><div class="page-head"><div><h2>الماكينات</h2><p>سجل معدات المصنع واربطها بسياق العمل</p></div></div>
  <div class="grid">
   <div class="card wide"><h2>الماكينات المسجلة</h2><div class="field"><label>المنشأة</label><select id="machineOrg"></select></div><div id="machineList"><div class="empty">لا توجد ماكينات مسجلة.</div></div></div>
   <div class="card side"><h2>إضافة ماكينة</h2><div class="field"><label>اسم الماكينة *</label><input id="machineName" placeholder="مثال: ماكينة حقن رقم 3"></div><div class="field"><label>الشركة المصنعة</label><input id="manufacturer" placeholder="Arburg / Haitian / ..."></div><div class="field"><label>الموديل</label><input id="machineModel" placeholder="Model"></div><button class="btn primary" id="createMachine" style="width:100%">حفظ الماكينة</button></div>
  </div>
 </section>
+</main></div>
 <footer class="footer">مِيدان MIDAAN · نسخة تجريبية قيد التطوير · لا تعتمد أي محتوى فني أو إجراء سلامة دون مراجعة واعتماد مختص.</footer>
 </div>
 
