@@ -4,6 +4,8 @@ const fs=require("node:fs");
 const html=fs.readFileSync("index.html","utf8");
 const js=fs.readFileSync("app.js","utf8");
 const sql=fs.readFileSync("supabase/migrations/20261110200000_global_rfq_and_quotes.sql","utf8");
+const updateLimit=fs.readFileSync("supabase/migrations/20261110201000_limit_rfq_updates_to_status.sql","utf8");
+const titleSnapshot=fs.readFileSync("supabase/migrations/20261110202000_snapshot_rfq_title.sql","utf8");
 test("RFQ page provides factory posting, supplier quoting, filters, and quote inbox",()=>{
  for(const id of ["view-rfqs","rfqOrg","rfqTitle","rfqDescription","rfqCategory","createRfq","rfqList","rfqSearch","rfqCategoryFilter","rfqQuotePanel","quoteAmount","quoteCurrency","quoteLeadDays","quoteNotes","submitRfqQuote","myRfqQuotes"])assert.ok(html.includes('id="'+id+'"'),"missing "+id);
  assert.ok(html.includes('data-view="rfqs"'));
@@ -20,6 +22,8 @@ test("RFQ and quote tables enforce RLS and participant-specific access",()=>{
  assert.ok(sql.includes("rfq_quotes_insert_public_supplier"));
  assert.ok(sql.includes("rfq_quotes_update_participant_status"));
  assert.ok(sql.includes("rfq_quotes_one_accepted_per_rfq"));
+ assert.ok(updateLimit.includes("grant update(status) on table public.industrial_rfqs"));
+ assert.ok(titleSnapshot.includes("new.rfq_title:=v_title"));
 });
 test("RFQs snapshot the organization display name and suppliers must be public",()=>{
  assert.ok(sql.includes("prepare_industrial_rfq"));
