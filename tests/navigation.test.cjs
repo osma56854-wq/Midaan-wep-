@@ -57,7 +57,7 @@ test("service worker refreshes the shell and does not intercept cross-origin API
   assert.ok(sw.includes("url.origin!==self.location.origin"));
   assert.ok(sw.includes("fetch(request)"));
   assert.ok(sw.includes("if(STATIC.test(url.pathname))"));
-  assert.ok(!sw.includes("caches.match(request).then(cached=>cached||fetch(request)")), "do not cache arbitrary same-origin GET responses");
+  assert.ok(!sw.includes("caches.match(request).then(cached=>cached||fetch(request)"), "do not cache arbitrary same-origin GET responses");
 });
 
 test("preventive maintenance page exposes schedule and filter controls", () => {
