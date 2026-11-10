@@ -53,7 +53,7 @@ test("fault reports support role-aware status transitions", () => {
 });
 test("service worker refreshes the shell and does not intercept cross-origin APIs", () => {
   const sw = fs.readFileSync("sw.js", "utf8");
-  assert.ok(sw.includes("midaan-shell-v5"));
+  assert.ok(sw.includes("midaan-shell-v7"));
   assert.ok(sw.includes("url.origin!==self.location.origin"));
   assert.ok(sw.includes("fetch(request)"));
   assert.ok(sw.includes("if(STATIC.test(url.pathname))"));
