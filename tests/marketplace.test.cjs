@@ -36,8 +36,8 @@ test("marketplace tables enforce authenticated access and row-level security", (
   assert.ok(migration.includes("professional_profiles_select_visible"));
   assert.ok(migration.includes("service_offers_select_visible"));
   assert.ok(migration.includes("service_requests_select_participants"));
-  assert.ok(migration.includes("service_requests_provider_update"));
-  assert.ok(migration.includes("service_requests_requester_cancel"));
+  assert.ok(migration.includes("service_requests_offer_created"));
+  assert.ok(migration.includes("service_requests_update_status_participant"));
 });
 
 test("service requests are checked against a published offer and the requester's active organization membership", () => {
