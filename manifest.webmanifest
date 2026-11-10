@@ -1,9 +1,9 @@
 {
-  "name": "MIDAAN — مساحة العمل الصناعية",
+  "name": "MIDAAN — Global Industrial Network",
   "short_name": "MIDAAN",
   "lang": "ar",
   "dir": "rtl",
-  "description": "منصة لإدارة المعرفة والمهارات الصناعية وبلاغات الأعطال",
+  "description": "Global industrial platform connecting factories, technicians, engineers, suppliers and service providers.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
