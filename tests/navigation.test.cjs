@@ -13,21 +13,24 @@ test("all primary destinations have both navigation links and page containers", 
 });
 
 test("navigation changes active page and supports browser history", () => {
-  assert.match(js, /document\.querySelectorAll\("\.view"\)/);
-  assert.match(js, /history\.pushState/);
-  assert.match(js, /addEventListener\("popstate"/);
-  assert.match(js, /document\.querySelectorAll\("\[data-view\]"\)/);
+  assert.match(js, /document\\.querySelectorAll\\("\\.view"\\)/);
+  assert.match(js, /history\\.pushState/);
+  assert.match(js, /addEventListener\\("\\popstate"/);
+  assert.match(js, /document\\.querySelectorAll\\("\\[data-view\\]"\\)/);
 });
 
 test("responsive workspace and accessible navigation are present", () => {
   assert.match(html, /aria-label="التنقل الرئيسي"/);
-  assert.match(html, /@media\(max-width:900px\)/);
-  assert.match(html, /@media\(max-width:560px\)/);
+  assert.match(html, /@media\\(max-width:900px\\)/);
+  assert.match(html, /@media\\(max-width:560px\\)/);
 });
 
 test("dashboard content belongs to the overview page", () => {
-  const overview = html.match(/<section class="view active" id="view-overview">([\s\S]*?)<\/section>/);
-  assert.ok(overview, "overview container exists");
-  assert.match(overview[1], /مساحة العمل الصناعية/);
-  assert.match(overview[1], /statOrgs/);
+  const start = html.indexOf('<section class="view active" id="view-overview">');
+  const end = html.indexOf('<section class="view" id="view-skills">', start);
+  assert.notEqual(start, -1, "overview container exists");
+  assert.notEqual(end, -1, "next page boundary exists");
+  const overview = html.slice(start, end);
+  assert.match(overview, /مساحة العمل الصناعية/);
+  assert.match(overview, /statOrgs/);
 });
