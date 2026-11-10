@@ -13,7 +13,31 @@
     }
     return list;
   }
-  const api={MAX_FILES,MAX_FILE_SIZE,ALLOWED_TYPES,validateFiles};
+  async function uploadWithRollback(files,uploadOne,saveMetadata,removeFiles){
+    const paths=[],metadata=[];
+    try{
+      for(const file of files){
+        const result=await uploadOne(file);
+        paths.push(result.path);
+        metadata.push(result.metadata);
+      }
+      if(metadata.length)await saveMetadata(metadata);
+      return paths;
+    }catch(cause){
+      let cleanupError=null;
+      if(paths.length){
+        try{await removeFiles(paths)}catch(error){cleanupError=error}
+      }
+      const detail=cause&&cause.message?cause.message:"فشل غير متوقع أثناء رفع المرفقات.";
+      const error=new Error(detail+(cleanupError
+        ?" تعذر تنظيف كل الملفات المرفوعة تلقائيًا؛ يلزم فحص التخزين."
+        :" تم تنظيف الملفات المرفوعة في هذه المحاولة."));
+      error.cause=cause;
+      error.cleanupFailed=!!cleanupError;
+      throw error;
+    }
+  }
+  const api={MAX_FILES,MAX_FILE_SIZE,ALLOWED_TYPES,validateFiles,uploadWithRollback};
   if(typeof module!=="undefined"&&module.exports)module.exports=api;
   if(root)root.MidaanSkillUploads=api;
 })(typeof window!=="undefined"?window:null);
