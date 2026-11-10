@@ -31,3 +31,18 @@ test("maintenance status changes set and clear completion timestamps consistentl
   assert.match(js,/completed_at:status==="completed"\?now:null/);
   assert.match(js,/\["scheduled","in_progress"\]\.includes\(task\.status\)/);
 });
+
+const recurrenceSql=fs.readFileSync("supabase/migrations/20261110174000_maintenance_recurring_occurrences.sql","utf8");
+test("recurring maintenance creates one next occurrence after completion",()=>{
+  assert.match(recurrenceSql,/after update of status on public\.maintenance_tasks/i);
+  assert.match(recurrenceSql,/new\.status = 'completed'/i);
+  assert.match(recurrenceSql,/new\.interval_days is not null/i);
+  assert.match(recurrenceSql,/clock_timestamp\(\) \+ make_interval\(days => new\.interval_days\)/i);
+  assert.match(recurrenceSql,/on conflict \(recurrence_parent_id\)[\s\S]*do nothing/i);
+  assert.match(recurrenceSql,/unique index if not exists maintenance_tasks_one_next_occurrence_per_parent/i);
+});
+test("maintenance UI exposes the automatically generated next occurrence",()=>{
+  assert.match(js,/recurrence_parent_id/);
+  assert.match(js,/يُنشأ الموعد التالي عند الإكمال/);
+  assert.match(js,/إنشاء موعد الصيانة الدوري التالي تلقائيًا/);
+});

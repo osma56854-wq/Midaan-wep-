@@ -53,9 +53,11 @@ test("fault reports support role-aware status transitions", () => {
 });
 test("service worker refreshes the shell and does not intercept cross-origin APIs", () => {
   const sw = fs.readFileSync("sw.js", "utf8");
-  assert.ok(sw.includes("midaan-shell-v3"));
+  assert.ok(sw.includes("midaan-shell-v4"));
   assert.ok(sw.includes("url.origin!==self.location.origin"));
   assert.ok(sw.includes("fetch(request)"));
+  assert.ok(sw.includes("if(STATIC.test(url.pathname))"));
+  assert.ok(!sw.includes("caches.match(request).then(cached=>cached||fetch(request)"), "do not cache arbitrary same-origin GET responses");
 });
 
 test("preventive maintenance page exposes schedule and filter controls", () => {
