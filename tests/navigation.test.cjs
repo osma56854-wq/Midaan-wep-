@@ -45,3 +45,15 @@ test("saved skill procedures are rendered with their steps", () => {
   assert.ok(js.includes("skill_steps(id,step_number,instruction,expected_result)"));
   assert.ok(js.includes('class="step-list"'));
 });
+
+test("fault reports support role-aware status transitions", () => {
+  assert.ok(js.includes('data-report-status'));
+  assert.ok(js.includes('.update({status:button.dataset.reportStatus})'));
+  assert.ok(js.includes('["owner","admin","engineer"].includes(org?.memberRole)'));
+});
+test("service worker refreshes the shell and does not intercept cross-origin APIs", () => {
+  const sw = fs.readFileSync("sw.js", "utf8");
+  assert.ok(sw.includes("midaan-shell-v2"));
+  assert.ok(sw.includes("url.origin!==self.location.origin"));
+  assert.ok(sw.includes("fetch(request)"));
+});
