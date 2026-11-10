@@ -19,6 +19,8 @@ jobs:
           node-version: 22
       - name: Check JavaScript syntax
         run: node --check app.js
+      - name: Test navigation regression checks
+        run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs
       - name: Check required frontend files and security settings
         run: |
           test -s index.html
