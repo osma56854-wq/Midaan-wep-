@@ -53,7 +53,23 @@ test("fault reports support role-aware status transitions", () => {
 });
 test("service worker refreshes the shell and does not intercept cross-origin APIs", () => {
   const sw = fs.readFileSync("sw.js", "utf8");
-  assert.ok(sw.includes("midaan-shell-v2"));
+  assert.ok(sw.includes("midaan-shell-v3"));
   assert.ok(sw.includes("url.origin!==self.location.origin"));
   assert.ok(sw.includes("fetch(request)"));
+});
+
+test("preventive maintenance page exposes schedule and filter controls", () => {
+  for (const id of ["maintenanceOrg","maintenanceMachine","maintenanceTitle","maintenanceDescription","maintenanceDue","maintenanceInterval","maintenancePriority","createMaintenance","maintenanceFilter","maintenanceList","maintenanceListOrg","statMaintenanceDue"]) assert.ok(html.includes('id="' + id + '"'), "missing maintenance control: " + id);
+  assert.ok(html.includes('data-view="maintenance"'));
+  assert.ok(js.includes('from("maintenance_tasks")'));
+  assert.ok(js.includes('updateMaintenanceTask'));
+});
+test("maintenance form validates machine organization and recurrence interval", () => {
+  assert.ok(js.includes('m.organization_id===organization_id'));
+  assert.ok(js.includes('interval_days<1||interval_days>3650'));
+  assert.ok(js.includes('due_at:new Date(dueValue).toISOString()'));
+});
+test("maintenance status updates enforce manager or assignee access in the client", () => {
+  assert.ok(js.includes('if(!manager&&task.assigned_to!==currentUserId)'));
+  assert.ok(js.includes('completed_at:status==="completed"?now:null'));
 });
