@@ -104,3 +104,11 @@ test("navigation includes all global platform sections", () => {
   assert.ok(html.includes('data-view="rfqs"'));
   assert.ok(js.includes('"rfqs"'));
 });
+
+test("language and theme controls are available before sign-in", () => {
+  assert.ok(html.includes('id="authThemeToggle"'));
+  assert.ok(html.includes('id="authLanguageToggle"'));
+  assert.ok(js.includes('$("authThemeToggle").onclick=toggleTheme'));
+  assert.ok(js.includes('$("authLanguageToggle").onclick=changeLanguage'));
+  assert.ok(js.includes('applyTheme(localStorage.getItem("midaan-theme")==="dark")'));
+});
