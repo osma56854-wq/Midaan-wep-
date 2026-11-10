@@ -6,7 +6,7 @@ const html = fs.readFileSync("index.html", "utf8");
 const js = fs.readFileSync("app.js", "utf8");
 
 test("all primary destinations have both navigation links and page containers", () => {
-  for (const name of ["overview", "skills", "organizations", "machines"]) {
+  for (const name of ["overview", "skills", "organizations", "machines", "faults", "settings"]) {
     assert.ok(html.includes('data-view="' + name + '"'));
     assert.ok(html.includes('id="view-' + name + '"'));
   }
@@ -33,4 +33,15 @@ test("dashboard content belongs to the overview page", () => {
   const overview = html.slice(start, end);
   assert.ok(overview.includes("مساحة العمل الصناعية"));
   assert.ok(overview.includes("statOrgs"));
+});
+
+test("fault center and account settings expose working controls", () => {
+  for (const id of ["faultOrg", "faultMachine", "faultTitle", "faultDescription", "faultSeverity", "createFaultReport", "faultList", "profileName", "saveProfile", "themeToggle", "changePassword"]) assert.ok(html.includes('id="' + id + '"'), "missing control: " + id);
+  assert.ok(js.includes('from("fault_reports")'));
+  assert.ok(js.includes('updateUser({data:{display_name:name}})'));
+  assert.ok(js.includes('localStorage.setItem("midaan-theme"'));
+});
+test("saved skill procedures are rendered with their steps", () => {
+  assert.ok(js.includes("skill_steps(id,step_number,instruction,expected_result)"));
+  assert.ok(js.includes('class="step-list"'));
 });
