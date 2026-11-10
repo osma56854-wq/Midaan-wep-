@@ -14,6 +14,13 @@ test("accepts exactly 25 MiB and rejects larger files",()=>{
   assert.throws(()=>validateFiles([file("large.pdf","application/pdf",MAX_FILE_SIZE+1)]),/25 ميجابايت/);
 });
 test("rejects empty files",()=>assert.throws(()=>validateFiles([file("empty.pdf","application/pdf",0)]),/الملف فارغ/));
+test("uploads all files and persists metadata once on success",async()=>{
+  const saved=[],removed=[];
+  const paths=await uploadWithRollback([1,2],async n=>({path:"p"+n,metadata:{n}}),async rows=>saved.push(...rows),async items=>removed.push(...items));
+  assert.deepEqual(paths,["p1","p2"]);
+  assert.deepEqual(saved,[{n:1},{n:2}]);
+  assert.deepEqual(removed,[]);
+});
 test("removes earlier uploads when a later upload fails",async()=>{
   const removed=[];let count=0;
   await assert.rejects(uploadWithRollback([1,2,3],async n=>{
