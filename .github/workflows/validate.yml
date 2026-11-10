@@ -36,6 +36,7 @@ jobs:
           test -s tests/team.test.cjs
           test -s supabase/migrations/20261110210000_organization_invitations_and_team_roles.sql
           test -s supabase/migrations/20261110211000_harden_organization_invitation_access.sql
+          test -s supabase/migrations/20261110211000_harden_organization_invitation_access.sql
           test -s supabase/migrations/20261110200000_global_rfq_and_quotes.sql
           test -s supabase/migrations/20261110201000_limit_rfq_updates_to_status.sql
           test -s supabase/migrations/20261110202000_snapshot_rfq_title.sql
