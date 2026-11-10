@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101918"><meta name="description" content="مِيدان — شبكة المعرفة والمهارات الصناعية">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://lkofveroqcrfehczdlkl.supabase.co wss://lkofveroqcrfehczdlkl.supabase.co https://api.pwnedpasswords.com; img-src 'self' data: blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://lkofveroqcrfehczdlkl.supabase.co wss://lkofveroqcrfehczdlkl.supabase.co https://api.pwnedpasswords.com; img-src 'self' https://lkofveroqcrfehczdlkl.supabase.co data: blob:; media-src 'self' https://lkofveroqcrfehczdlkl.supabase.co blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>مِيدان | MIDAAN</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
@@ -84,6 +84,7 @@
    <div class="field"><label>مستوى الخطورة التقديري</label><select id="safety"><option value="normal">عادي</option><option value="caution" selected>يحتاج احتياط</option><option value="high">مرتفع</option><option value="critical">حرج</option></select></div>
    <div class="field"><label>ملخص الخبرة</label><textarea id="skillSummary" placeholder="ما المشكلة أو المهمة؟ ومتى تُستخدم هذه المهارة؟"></textarea></div>
    <div class="field"><label>خطوات التنفيذ (كل خطوة في سطر منفصل)</label><textarea id="skillSteps" placeholder="1. تأكد من إيقاف وعزل مصادر الطاقة وفق إجراءات المصنع&#10;2. جهّز الأدوات المناسبة&#10;3. وثّق الفحص والنتيجة"></textarea></div>
+   <div class="field"><label>صور أو فيديو أو PDF داعم (اختياري، حتى 5 ملفات، 25 ميجابايت للملف)</label><input id="skillFiles" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,application/pdf" multiple></div>
    <div class="tiny" style="margin-bottom:12px">لا تكتب خطوات خطرة قبل مراجعتها من مسؤول السلامة أو المهندس المختص.</div>
    <button class="btn primary" id="saveSkill" style="width:100%">حفظ كمسودة</button>
   </div>
