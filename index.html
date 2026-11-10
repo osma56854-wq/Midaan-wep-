@@ -24,6 +24,7 @@
 @media(max-width:560px){.stat.quarter{grid-column:1/-1}.shell{padding:13px}.hero{padding:23px 0 17px}.hero-mark{display:none}.stat{grid-column:1/-1;min-height:82px}.stat .num{font-size:27px}.user-email{display:none}.top{align-items:center}.top-actions{flex-direction:row}.brand strong{font-size:18px}.brand small{font-size:11px}.card{padding:16px;border-radius:15px}.nav-link{font-size:12px;gap:7px}.nav-icon{display:none}.page-head h2{font-size:20px}.item-head{flex-direction:column}.auth-card{padding:22px}}
 :focus-visible{outline:3px solid #55a7cf;outline-offset:2px}.field input,.field textarea,.field select{min-height:44px}.report-card{border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0;background:var(--surface)}.report-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.step-list{margin:10px 0 0;padding:0 22px 0 0;color:var(--text)}.step-list li{padding:4px 0}.theme-dark{--bg:#0d1724;--surface:#142337;--surface-2:#1a2b40;--line:#2a3d52;--text:#e6edf5;--ink:#edf4fb;--navy:#e5eff9;--muted:#a6b6c8;--blue:#72b9df;--cyan:#54c0cc;--shadow:0 12px 32px rgba(0,0,0,.18)}.theme-dark .field input,.theme-dark .field textarea,.theme-dark .field select{background:#102034;border-color:#344a61;color:#e6edf5}.theme-dark .btn{background:#1b3048;border-color:#344a61;color:#e6edf5}.theme-dark .btn.primary{background:linear-gradient(135deg,#246b91,#1a5278);color:white}.theme-dark .pill{background:#1b3048;border-color:#344a61;color:#b9c8d8}.theme-dark .empty{background:#142337;border-color:#344a61}.theme-dark .report-card,.theme-dark .card{background:var(--surface)}.theme-dark .field label{color:#c5d3e1}.theme-dark .item{border-color:#2a3d52}.theme-dark .footer{border-color:#2a3d52}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
+.marketplace-toolbar{margin-top:12px;gap:10px}.marketplace-offer{border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0;background:var(--surface)}.marketplace-offer .meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.marketplace-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.market-request{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}.marketplace-toolbar .field{min-width:0}@media(max-width:560px){.marketplace-toolbar{grid-template-columns:1fr}.marketplace-toolbar .field{margin-bottom:8px}}
 </style>
 </head>
 <body>
@@ -62,6 +63,7 @@
  <button class="nav-link" data-view="machines"><span class="nav-icon">⚙</span>الماكينات</button>
  <button class="nav-link" data-view="maintenance"><span class="nav-icon">▣</span>الصيانة الوقائية</button>
  <button class="nav-link" data-view="faults"><span class="nav-icon">!</span>بلاغات الأعطال</button>
+ <button class="nav-link" data-view="marketplace"><span class="nav-icon">⇄</span>السوق الصناعي</button>
  <button class="nav-link" data-view="settings"><span class="nav-icon">☷</span>الإعدادات</button>
  <div class="side-label" style="margin-top:18px">إدارة المنصة</div>
  <div style="padding:8px 12px;color:#9bb0c3;font-size:11px;line-height:1.8">تظهر هنا الخدمات المتاحة لحسابك. الأقسام غير المفعّلة لن تعرض وظائف وهمية.</div>
@@ -140,6 +142,70 @@
   <div class="card side"><h3>تسجيل بلاغ جديد</h3><div class="field"><label for="faultOrg">المنشأة *</label><select id="faultOrg"></select></div><div class="field"><label for="faultMachine">الماكينة (اختياري)</label><select id="faultMachine"><option value="">بدون ماكينة محددة</option></select></div><div class="field"><label for="faultTitle">عنوان العطل *</label><input id="faultTitle" maxlength="180" placeholder="مثال: ارتفاع حرارة زيت الهيدروليك"></div><div class="field"><label for="faultDescription">وصف العطل *</label><textarea id="faultDescription" maxlength="4000" placeholder="اكتب الأعراض ووقت ظهورها وما تم ملاحظته دون تنفيذ إجراء خطر."></textarea></div><div class="field"><label for="faultSeverity">الأولوية</label><select id="faultSeverity"><option value="low">منخفضة</option><option value="medium" selected>متوسطة</option><option value="high">مرتفعة</option><option value="critical">حرجة</option></select></div><button class="btn primary" id="createFaultReport" style="width:100%">إرسال البلاغ</button><p class="tiny">في الحالات الحرجة، اتبع خطة الطوارئ المعتمدة بالمصنع ولا تعتمد على التطبيق كبديل للاستجابة الفورية.</p></div>
  </div>
 </section>
+
+<section class="view" id="view-marketplace">
+ <div class="page-head"><div><h2>السوق الصناعي</h2><p>اعرض خدماتك المهنية أو ابحث عن فني ومهندس وشركة صيانة في أي دولة.</p></div></div>
+ <div class="grid">
+  <div class="card wide">
+   <h3>عروض الخدمات الصناعية</h3>
+   <div class="two marketplace-toolbar">
+    <div class="field"><label for="marketSearch">بحث</label><input id="marketSearch" maxlength="100" placeholder="ابحث عن خدمة أو تخصص أو مدينة"></div>
+    <div class="field"><label for="marketCategoryFilter">التخصص</label><select id="marketCategoryFilter"><option value="">كل التخصصات</option><option value="plastic_injection">ماكينات حقن البلاستيك</option><option value="mold_maintenance">صيانة القوالب</option><option value="hydraulic">هيدروليك</option><option value="electrical_control">كهرباء وتحكم</option><option value="mechanical">صيانة ميكانيكية</option><option value="lathe_milling">خراطة وفرازة</option><option value="spare_parts">قطع غيار</option><option value="general_maintenance">صيانة عامة</option><option value="other">خدمات أخرى</option></select></div>
+    <div class="field"><label for="marketCountryFilter">الدولة (رمز ISO)</label><input id="marketCountryFilter" maxlength="2" placeholder="EG / SA / AE"></div>
+   </div>
+   <div id="marketplaceList" aria-live="polite"><div class="empty">جاري تحميل عروض الخدمات...</div></div>
+  </div>
+  <div class="card side">
+   <h3>ملفي المهني</h3>
+   <p class="tiny">البيانات هنا مهنية فقط. لن نعرض بريدك الإلكتروني أو بيانات دخولك في السوق.</p>
+   <div class="field"><label for="marketProfileName">الاسم المهني *</label><input id="marketProfileName" maxlength="100" placeholder="اسمك أو اسم الشركة"></div>
+   <div class="field"><label for="marketProfessionalType">نوع الحساب المهني</label><select id="marketProfessionalType"><option value="technician">فني</option><option value="engineer">مهندس</option><option value="service_company">شركة خدمات صناعية</option></select></div>
+   <div class="field"><label for="marketHeadline">التخصص أو المسمى *</label><input id="marketHeadline" maxlength="120" placeholder="مثال: فني صيانة قوالب حقن البلاستيك"></div>
+   <div class="two">
+    <div class="field"><label for="marketCountryCode">رمز الدولة</label><input id="marketCountryCode" maxlength="2" value="EG" placeholder="EG"></div>
+    <div class="field"><label for="marketCity">المدينة</label><input id="marketCity" maxlength="100" placeholder="المدينة"></div>
+   </div>
+   <div class="field"><label for="marketExperience">سنوات الخبرة</label><input id="marketExperience" type="number" min="0" max="60" value="0"></div>
+   <div class="field"><label for="marketBio">نبذة مهنية</label><textarea id="marketBio" maxlength="1500" placeholder="خبراتك ومجالات العمل التي تتقنها..."></textarea></div>
+   <div class="field"><label for="marketLanguages">اللغات (افصل بينها بفاصلة)</label><input id="marketLanguages" maxlength="100" placeholder="ar, en"></div>
+   <div class="field"><label for="marketSpecialties">التخصصات (افصل بينها بفاصلة)</label><input id="marketSpecialties" maxlength="300" placeholder="حقن البلاستيك, صيانة القوالب"></div>
+   <label class="tiny" style="display:flex;gap:8px;align-items:center;margin:8px 0 14px"><input id="marketPublic" type="checkbox"> إظهار ملفي المهني في السوق للمستخدمين المسجلين</label>
+   <button class="btn primary" id="saveMarketProfile" style="width:100%">حفظ الملف المهني</button>
+   <div class="message" id="marketProfileMessage" role="status"></div>
+   <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+   <h3>إضافة عرض خدمة</h3>
+   <div class="field"><label for="offerTitle">عنوان الخدمة *</label><input id="offerTitle" maxlength="140" placeholder="مثال: صيانة قوالب حقن البلاستيك"></div>
+   <div class="field"><label for="offerCategory">التخصص</label><select id="offerCategory"><option value="plastic_injection">ماكينات حقن البلاستيك</option><option value="mold_maintenance">صيانة القوالب</option><option value="hydraulic">هيدروليك</option><option value="electrical_control">كهرباء وتحكم</option><option value="mechanical">صيانة ميكانيكية</option><option value="lathe_milling">خراطة وفرازة</option><option value="spare_parts">قطع غيار</option><option value="general_maintenance">صيانة عامة</option><option value="other">خدمات أخرى</option></select></div>
+   <div class="field"><label for="offerDescription">وصف الخدمة *</label><textarea id="offerDescription" maxlength="2500" placeholder="اشرح نطاق الخدمة وخبرتك وما الذي سيحصل عليه المصنع."></textarea></div>
+   <div class="two">
+    <div class="field"><label for="offerServiceMode">طريقة تقديم الخدمة</label><select id="offerServiceMode"><option value="on_site">في موقع العميل</option><option value="remote">عن بُعد</option><option value="both">الاثنان</option></select></div>
+    <div class="field"><label for="offerPriceType">التسعير</label><select id="offerPriceType"><option value="quote">حسب الاتفاق</option><option value="fixed">سعر ثابت</option><option value="hourly">بالساعة</option></select></div>
+   </div>
+   <div class="two">
+    <div class="field"><label for="offerPriceAmount">السعر (اختياري)</label><input id="offerPriceAmount" type="number" min="0" step="0.01" placeholder="0"></div>
+    <div class="field"><label for="offerCurrencyCode">العملة (ISO)</label><input id="offerCurrencyCode" maxlength="3" placeholder="EGP / SAR / USD"></div>
+   </div>
+   <div class="field"><label for="offerStatus">حالة العرض</label><select id="offerStatus"><option value="draft">حفظ كمسودة</option><option value="published">نشر في السوق</option></select></div>
+   <button class="btn primary" id="createServiceOffer" style="width:100%">حفظ عرض الخدمة</button>
+   <div class="message" id="offerMessage" role="status"></div>
+  </div>
+  <div class="card full hidden" id="serviceRequestPanel">
+   <h3>إرسال طلب خدمة</h3><p id="requestOfferTitle" class="muted"></p>
+   <input id="requestOfferId" type="hidden">
+   <div class="field"><label for="requestOrg">المنشأة التي تطلب الخدمة</label><select id="requestOrg"></select></div>
+   <div class="field"><label for="requestMessage">تفاصيل احتياج المصنع *</label><textarea id="requestMessage" maxlength="2000" placeholder="اشرح المشكلة أو الخدمة المطلوبة وموعد الاحتياج..."></textarea></div>
+   <div class="form-actions"><button class="btn primary" id="submitServiceRequest">إرسال الطلب</button><button class="btn" id="cancelServiceRequest">إلغاء</button></div>
+   <div class="message" id="requestMessageStatus" role="status"></div>
+  </div>
+  <div class="card full">
+   <div class="two">
+    <div><h3>الطلبات الواردة إليّ</h3><div id="incomingRequests" aria-live="polite"><div class="empty">لا توجد طلبات واردة.</div></div></div>
+    <div><h3>الطلبات التي أرسلتها</h3><div id="outgoingRequests" aria-live="polite"><div class="empty">لم ترسل طلبات بعد.</div></div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
 <section class="view" id="view-settings"><div class="page-head"><div><h2>إعدادات الحساب</h2><p>إدارة بياناتك الأساسية وتفضيلات واجهة مِيدان.</p></div></div>
  <div class="grid">
   <div class="card wide"><h3>الملف المهني</h3><div class="field"><label for="profileEmail">البريد الإلكتروني</label><input id="profileEmail" type="email" readonly></div><div class="field"><label for="profileName">الاسم الظاهر</label><input id="profileName" maxlength="80" autocomplete="name" placeholder="اسمك المهني"></div><button class="btn primary" id="saveProfile">حفظ بيانات الملف</button><div class="message" id="profileMessage" role="status"></div></div>
