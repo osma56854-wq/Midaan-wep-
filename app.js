@@ -119,10 +119,10 @@ function renderServiceRequests(){
 }
 $("saveMarketProfile").onclick=async()=>{
   const display_name=$("marketProfileName").value.trim(),professional_type=$("marketProfessionalType").value,headline=$("marketHeadline").value.trim(),country_code=$("marketCountryCode").value.trim().toUpperCase(),city=$("marketCity").value.trim(),bio=$("marketBio").value.trim(),years_experience=Number($("marketExperience").value),languages=splitMarketValues($("marketLanguages").value,8,20),specialties=splitMarketValues($("marketSpecialties").value,12,80),is_public=$("marketPublic").checked,b=$("saveMarketProfile");
-  if(display_name.length<2||headline.length<4)throw new Error("اكتب الاسم المهني والتخصص بشكل صحيح.");
-  if(!/^[A-Z]{2}$/.test(country_code))throw new Error("رمز الدولة يجب أن يكون حرفين كبيرين مثل EG أو SA.");
-  if(!Number.isInteger(years_experience)||years_experience<0||years_experience>60)throw new Error("سنوات الخبرة يجب أن تكون من 0 إلى 60.");
-  if(!languages.length)throw new Error("أضف لغة واحدة على الأقل.");
+  if(display_name.length<2||headline.length<4){showMessage("marketProfileMessage","اكتب الاسم المهني والتخصص بشكل صحيح.",true);return;}
+  if(!/^[A-Z]{2}$/.test(country_code)){showMessage("marketProfileMessage","رمز الدولة يجب أن يكون حرفين كبيرين مثل EG أو SA.",true);return;}
+  if(!Number.isInteger(years_experience)||years_experience<0||years_experience>60){showMessage("marketProfileMessage","سنوات الخبرة يجب أن تكون من 0 إلى 60.",true);return;}
+  if(!languages.length){showMessage("marketProfileMessage","أضف لغة واحدة على الأقل.",true);return;}
   b.disabled=true;
   try{
     const {error}=await db.from("professional_profiles").upsert({user_id:currentUserId,display_name,professional_type,headline,country_code,city:city||null,bio:bio||null,years_experience,languages,specialties,is_public},{onConflict:"user_id"});
@@ -134,11 +134,11 @@ $("saveMarketProfile").onclick=async()=>{
 };
 $("createServiceOffer").onclick=async()=>{
   const title=$("offerTitle").value.trim(),description=$("offerDescription").value.trim(),category=$("offerCategory").value,service_mode=$("offerServiceMode").value,price_type=$("offerPriceType").value,status=$("offerStatus").value,currency_code=$("offerCurrencyCode").value.trim().toUpperCase(),priceRaw=$("offerPriceAmount").value,price_amount=priceRaw===""?null:Number(priceRaw),b=$("createServiceOffer");
-  if(!professionalProfile)throw new Error("احفظ ملفك المهني أولًا قبل إضافة عرض خدمة.");
-  if(title.length<4||description.length<20)throw new Error("اكتب عنوانًا ووصفًا واضحًا للخدمة (20 حرفًا على الأقل).");
-  if(status==="published"&&!professionalProfile.is_public)throw new Error("فعّل إظهار ملفك المهني أولًا حتى تتمكن من نشر العرض.");
-  if(price_type==="quote"&&(price_amount!==null||currency_code))throw new Error("اترك السعر والعملة فارغين عند اختيار حسب الاتفاق.");
-  if(price_type!=="quote"&&(!Number.isFinite(price_amount)||price_amount<0||!/^[A-Z]{3}$/.test(currency_code)))throw new Error("أدخل سعرًا صحيحًا ورمز عملة من 3 أحرف مثل EGP أو SAR أو USD.");
+  if(!professionalProfile){showMessage("offerMessage","احفظ ملفك المهني أولًا قبل إضافة عرض خدمة.",true);return;}
+  if(title.length<4||description.length<20){showMessage("offerMessage","اكتب عنوانًا ووصفًا واضحًا للخدمة (20 حرفًا على الأقل).",true);return;}
+  if(status==="published"&&!professionalProfile.is_public){showMessage("offerMessage","فعّل إظهار ملفك المهني أولًا حتى تتمكن من نشر العرض.",true);return;}
+  if(price_type==="quote"&&(price_amount!==null||currency_code)){showMessage("offerMessage","اترك السعر والعملة فارغين عند اختيار حسب الاتفاق.",true);return;}
+  if(price_type!=="quote"&&(!Number.isFinite(price_amount)||price_amount<0||!/^[A-Z]{3}$/.test(currency_code))){showMessage("offerMessage","أدخل سعرًا صحيحًا ورمز عملة من 3 أحرف مثل EGP أو SAR أو USD.",true);return;}
   b.disabled=true;
   try{
     const {error}=await db.from("service_offers").insert({provider_id:currentUserId,title,description,category,country_code:professionalProfile.country_code,city:professionalProfile.city,service_mode,price_type,currency_code:price_type==="quote"?null:currency_code,price_amount:price_type==="quote"?null:price_amount,status});
@@ -176,8 +176,8 @@ $("marketplaceList").addEventListener("click",async event=>{
 });
 $("submitServiceRequest").onclick=async()=>{
   const offer=marketOffers.find(o=>o.id===$("requestOfferId").value),organization_id=$("requestOrg").value,message=$("requestMessage").value.trim(),b=$("submitServiceRequest");
-  if(!offer||!organization_id)throw new Error("اختر عرض الخدمة والمنشأة.");
-  if(message.length<10)throw new Error("اكتب تفاصيل الطلب في 10 أحرف على الأقل.");
+  if(!offer||!organization_id){showMessage("requestMessageStatus","اختر عرض الخدمة والمنشأة.",true);return;}
+  if(message.length<10){showMessage("requestMessageStatus","اكتب تفاصيل الطلب في 10 أحرف على الأقل.",true);return;}
   b.disabled=true;
   try{
     const {error}=await db.from("service_requests").insert({offer_id:offer.id,organization_id,requested_by:currentUserId,provider_id:offer.provider_id,message});
