@@ -330,7 +330,12 @@ $("cancelRfqQuote").onclick=()=>{$("rfqQuotePanel").classList.add("hidden")};
 async function updateRfqQuote(button){
  const status=button.dataset.quoteStatus;if(!["accepted","rejected","withdrawn"].includes(status))return;
  button.disabled=true;
- try{const {error}=await db.from("rfq_quotes").update({status}).eq("id",button.dataset.quoteId);if(error)throw error;await loadRfqs();showMessage("globalMessage","تم تحديث حالة عرض السعر.")}catch(e){showMessage("globalMessage",e.message||"تعذر تحديث العرض.",true)}finally{button.disabled=false}
+ try{const {error}=await db.from("rfq_quotes").update({status}).eq("id",button.dataset.quoteId);if(error)throw error;
+  if(status==="accepted"){
+   const quote=industrialRfqs.flatMap(r=>r.rfq_quotes||[]).find(q=>q.id===button.dataset.quoteId);
+   if(quote){const {error:awardError}=await db.from("industrial_rfqs").update({status:"awarded"}).eq("id",quote.rfq_id);if(awardError)throw awardError}
+  }
+  await loadRfqs();showMessage("globalMessage","تم تحديث حالة عرض السعر.")}catch(e){showMessage("globalMessage",e.message||"تعذر تحديث العرض.",true)}finally{button.disabled=false}
 }
 $("rfqList").addEventListener("click",event=>{const b=event.target.closest("[data-quote-id][data-quote-status]");if(b)updateRfqQuote(b)});
 $("myRfqQuotes").addEventListener("click",event=>{const b=event.target.closest("[data-quote-id][data-quote-status]");if(b)updateRfqQuote(b)});
