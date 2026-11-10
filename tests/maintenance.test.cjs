@@ -3,7 +3,7 @@ const assert=require("node:assert/strict");
 const fs=require("node:fs");
 const html=fs.readFileSync("index.html","utf8");
 const js=fs.readFileSync("app.js","utf8");
-const sql=fs.readFileSync("supabase/migrations/20261110143000_create_maintenance_tasks.sql","utf8");
+const sql=fs.readFileSync("supabase/migrations/20261110140644_create_maintenance_tasks.sql","utf8");
 
 test("maintenance schema is organization scoped and row-level secured",()=>{
   assert.match(sql,/enable row level security/i);
