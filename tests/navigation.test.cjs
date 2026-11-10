@@ -6,7 +6,7 @@ const html = fs.readFileSync("index.html", "utf8");
 const js = fs.readFileSync("app.js", "utf8");
 
 test("all primary destinations have both navigation links and page containers", () => {
-  for (const name of ["overview", "skills", "organizations", "machines", "maintenance", "faults", "team", "rfqs", "marketplace", "settings"]) {
+  for (const name of ["overview", "skills", "organizations", "machines", "maintenance", "faults", "team", "catalog", "rfqs", "marketplace", "settings"]) {
     assert.ok(html.includes('data-view="' + name + '"'));
     assert.ok(html.includes('id="view-' + name + '"'));
   }
