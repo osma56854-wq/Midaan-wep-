@@ -25,7 +25,7 @@ test("maintenance constraints validate dates, status, priority and repeat interv
 });
 test("UI does not allow non-manager roles to create maintenance tasks",()=>{
   assert.match(js,/\["owner","admin","engineer"\]\.includes\(role\)/);
-  assert.match(js,/createMaintenance\)\.disabled=!allowed/);
+  assert.match(js,/createMaintenance"\)\.disabled=!allowed/);
 });
 test("maintenance status changes set and clear completion timestamps consistently",()=>{
   assert.match(js,/completed_at:status==="completed"\?now:null/);
