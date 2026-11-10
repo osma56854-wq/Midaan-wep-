@@ -208,7 +208,7 @@ $("marketCategoryFilter").onchange=renderMarketplace;
 $("marketCountryFilter").oninput=renderMarketplace;
 
 const validViews=["overview","skills","organizations","machines","maintenance","faults","marketplace","settings"];
-const viewMeta={overview:["الرئيسية","نظرة سريعة على نشاطك الصناعي في مِيدان"],skills:["مكتبة المهارات","وثّق خبرات فريقك واجعلها معرفة منظمة قابلة للمراجعة"],organizations:["المنشآت","إدارة المصانع والورش المرتبطة بحسابك"],machines:["الماكينات","سجل معدات المصنع واربطها بسياق العمل"],maintenance:["الصيانة الوقائية","خطط أعمال الصيانة وتابع المواعيد والتنفيذ"],faults:["بلاغات الأعطال","سجل البلاغات الفنية وتابع الأولويات والحالات"],marketplace:["السوق الصناعي","اعرض خدماتك أو اطلب خدمة صناعية من مقدم موثوق"],settings:["إعدادات الحساب","بياناتك المهنية وتفضيلات الأمان والمظهر"]};
+const viewMeta={overview:["الرئيسية","نظرة سريعة على نشاطك الصناعي في مِيدان"],skills:["مكتبة المهارات","وثّق خبرات فريقك واجعلها معرفة منظمة قابلة للمراجعة"],organizations:["المنشآت","إدارة المصانع والورش المرتبطة بحسابك"],machines:["الماكينات","سجل معدات المصنع واربطها بسياق العمل"],maintenance:["الصيانة الوقائية","خطط أعمال الصيانة وتابع المواعيد والتنفيذ"],faults:["بلاغات الأعطال","سجل البلاغات الفنية وتابع الأولويات والحالات"],marketplace:["السوق الصناعي","اعرض خدماتك أو اطلب خدمة صناعية من مقدم خدمة"],settings:["إعدادات الحساب","بياناتك المهنية وتفضيلات الأمان والمظهر"]};
 function activateView(name,{updateUrl=true}={}){
   if(!validViews.includes(name))name="overview";
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));
