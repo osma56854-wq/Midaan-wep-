@@ -66,6 +66,7 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
 
 .auth-preferences{display:flex;justify-content:flex-end;gap:8px;margin:-8px 0 16px}
 .team-member{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;background:var(--surface)}.team-member .meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.team-invite{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;background:var(--surface)}
+.catalog-product{display:grid;grid-template-columns:112px 1fr;gap:14px;border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:var(--surface)}.catalog-product img{width:112px;height:112px;object-fit:cover;border-radius:10px;background:var(--surface-2)}.catalog-placeholder{display:flex;align-items:center;justify-content:center;width:112px;height:112px;border-radius:10px;background:var(--surface-2);color:var(--muted);font-weight:800;letter-spacing:1px}.theme-dark .catalog-placeholder{background:#20364f;color:#d5e3f0}.catalog-product .product-meta{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.catalog-product .product-copy{min-width:0}@media(max-width:560px){.catalog-product{grid-template-columns:1fr}.catalog-product img{width:100%;height:180px}}
 </style>
 </head>
 <body>
@@ -104,6 +105,7 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
  <button class="nav-link" data-view="machines"><span class="nav-icon">⚙</span>الماكينات</button>
  <button class="nav-link" data-view="maintenance"><span class="nav-icon">▣</span>الصيانة الوقائية</button>
  <button class="nav-link" data-view="faults"><span class="nav-icon">!</span>بلاغات الأعطال</button>
+ <button class="nav-link" data-view="catalog"><span class="nav-icon">▧</span>كتالوج المنتجات</button>
  <button class="nav-link" data-view="team"><span class="nav-icon">♙</span>فريق العمل</button>
  <button class="nav-link" data-view="rfqs"><span class="nav-icon">▤</span>طلبات عروض الأسعار</button>
     <button class="nav-link" data-view="marketplace"><span class="nav-icon">⇄</span>السوق الصناعي</button>
@@ -188,6 +190,49 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
 </section>
 
 
+
+
+<section class="view" id="view-catalog">
+ <div class="page-head"><div><h2>كتالوج المنتجات الصناعية</h2><p>اعرض الخامات وقطع الغيار والقوالب والماكينات والأدوات أمام المصانع والمشترين.</p></div></div>
+ <div class="grid">
+  <div class="card wide">
+   <div class="item-head"><div><h3>المنتجات المعروضة</h3><p class="tiny">ابحث حسب المنتج أو التخصص أو الدولة.</p></div><button class="btn" id="refreshCatalog">تحديث</button></div>
+   <div class="two">
+    <div class="field"><label for="catalogSearch">بحث</label><input id="catalogSearch" maxlength="100" placeholder="اسم المنتج أو الشركة المصنعة أو SKU"></div>
+    <div class="field"><label for="catalogCategoryFilter">الفئة</label><select id="catalogCategoryFilter"><option value="">كل الفئات</option><option value="plastic_resin">خامات البلاستيك</option><option value="spare_parts">قطع غيار</option><option value="molds">قوالب</option><option value="machinery">ماكينات</option><option value="tools">عدد وأدوات</option><option value="packaging">تغليف</option><option value="other">أخرى</option></select></div>
+    <div class="field"><label for="catalogCountryFilter">الدولة</label><input id="catalogCountryFilter" maxlength="2" placeholder="EG / SA / AE"></div>
+   </div>
+   <div id="catalogList" aria-live="polite"><div class="empty">جاري تحميل المنتجات...</div></div>
+  </div>
+  <div class="card side">
+   <h3>أضف منتجًا إلى الكتالوج</h3><p class="tiny">يجب حفظ ملفك المهني أولًا. النشر العام يتطلب تفعيل إظهار الملف المهني.</p>
+   <div class="field"><label for="productTitle">اسم المنتج *</label><input id="productTitle" maxlength="160" placeholder="مثال: خامة PP حقن عالية الجودة"></div>
+   <div class="field"><label for="productDescription">الوصف والمواصفات *</label><textarea id="productDescription" maxlength="3000" placeholder="اكتب المواصفات الفنية، الاستخدام، الدرجة، الحالة، والقيود..."></textarea></div>
+   <div class="field"><label for="productCategory">الفئة</label><select id="productCategory"><option value="plastic_resin">خامات البلاستيك</option><option value="spare_parts">قطع غيار</option><option value="molds">قوالب</option><option value="machinery">ماكينات</option><option value="tools">عدد وأدوات</option><option value="packaging">تغليف</option><option value="other">أخرى</option></select></div>
+   <div class="field"><label for="productSku">رقم الصنف / SKU</label><input id="productSku" maxlength="80" placeholder="اختياري"></div>
+   <div class="two">
+    <div class="field"><label for="productCondition">الحالة</label><select id="productCondition"><option value="new">جديد</option><option value="used">مستعمل</option><option value="refurbished">مجدد</option></select></div>
+    <div class="field"><label for="productLeadDays">مدة التوريد بالأيام</label><input id="productLeadDays" type="number" min="0" max="3650" value="7"></div>
+   </div>
+   <div class="two">
+    <div class="field"><label for="productMinOrder">الحد الأدنى للطلب</label><input id="productMinOrder" type="number" min="0.001" step="0.001" value="1"></div>
+    <div class="field"><label for="productUnit">الوحدة</label><input id="productUnit" maxlength="24" value="unit" placeholder="كجم / قطعة / طن"></div>
+   </div>
+   <div class="two">
+    <div class="field"><label for="productPriceType">السعر</label><select id="productPriceType"><option value="quote">حسب طلب عرض السعر</option><option value="fixed">سعر ثابت</option></select></div>
+    <div class="field"><label for="productPriceAmount">المبلغ</label><input id="productPriceAmount" type="number" min="0" step="0.01" placeholder="اختياري"></div>
+   </div>
+   <div class="field"><label for="productCurrency">العملة</label><input id="productCurrency" maxlength="3" placeholder="EGP / SAR / USD"></div>
+   <div class="two">
+    <div class="field"><label for="productCountry">رمز الدولة</label><input id="productCountry" maxlength="2" value="EG"></div>
+    <div class="field"><label for="productCity">المدينة</label><input id="productCity" maxlength="100" placeholder="المدينة"></div>
+   </div>
+   <div class="field"><label for="productImage">صورة المنتج (JPG / PNG / WebP، حتى 5MB)</label><input id="productImage" type="file" accept="image/jpeg,image/png,image/webp"></div>
+   <div class="field"><label for="productStatus">حالة العرض</label><select id="productStatus"><option value="draft">مسودة</option><option value="published">نشر في الكتالوج</option></select></div>
+   <button class="btn primary" id="createProduct" style="width:100%">حفظ المنتج</button><div class="message" id="catalogMessage" role="status"></div>
+  </div>
+ </div>
+</section>
 
 <section class="view" id="view-team">
  <div class="page-head"><div><h2>فريق المنشأة</h2><p>أضف الفنيين والمهندسين والمراجعين، ونظّم صلاحياتهم ومهامهم داخل المصنع.</p></div></div>
