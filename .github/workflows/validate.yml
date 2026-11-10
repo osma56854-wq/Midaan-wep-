@@ -21,6 +21,7 @@ jobs:
         run: |
           node --check app.js
           node --check skill-upload-utils.js
+          node --check sw.js
       - name: Test navigation regression checks
         run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs
       - name: Check required frontend files and security settings
