@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#10243a"><meta name="description" content="مِيدان — شبكة المعرفة والمهارات الصناعية">
+<meta name="theme-color" content="#10243a"><meta name="description" content="مِيدان — مساحة العمل الصناعية لإدارة المهارات والماكينات وبلاغات الأعطال"><meta name="application-name" content="MIDAAN"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="MIDAAN"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/svg+xml" href="./midaan-icon.svg">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src 'self' https://lkofveroqcrfehczdlkl.supabase.co wss://lkofveroqcrfehczdlkl.supabase.co https://api.pwnedpasswords.com; img-src 'self' https://lkofveroqcrfehczdlkl.supabase.co data: blob:; media-src 'self' https://lkofveroqcrfehczdlkl.supabase.co blob:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>مِيدان | MIDAAN</title>
@@ -22,6 +22,8 @@
 .footer{border-top:1px solid var(--line);margin-top:32px;padding:17px 0;color:#8492a3;font-size:12px}.tabs{display:none}
 @media(max-width:900px){.shell{padding:18px}.app-layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;gap:5px;overflow-x:auto;padding:8px;border-radius:15px}.side-label{display:none}.nav-link{width:auto;min-width:max-content;justify-content:center;padding:10px 13px;margin:0}.nav-icon{width:24px;height:24px}.wide,.side{grid-column:1/-1}}
 @media(max-width:560px){.shell{padding:13px}.hero{padding:23px 0 17px}.hero-mark{display:none}.stat{grid-column:1/-1;min-height:82px}.stat .num{font-size:27px}.user-email{display:none}.top{align-items:center}.top-actions{flex-direction:row}.brand strong{font-size:18px}.brand small{font-size:11px}.card{padding:16px;border-radius:15px}.nav-link{font-size:12px;gap:7px}.nav-icon{display:none}.page-head h2{font-size:20px}.item-head{flex-direction:column}.auth-card{padding:22px}}
+:focus-visible{outline:3px solid #55a7cf;outline-offset:2px}.field input,.field textarea,.field select{min-height:44px}.report-card{border:1px solid var(--line);border-radius:14px;padding:15px;margin:10px 0;background:var(--surface)}.report-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.step-list{margin:10px 0 0;padding:0 22px 0 0;color:var(--text)}.step-list li{padding:4px 0}.theme-dark{--bg:#0d1724;--surface:#142337;--surface-2:#1a2b40;--line:#2a3d52;--text:#e6edf5;--ink:#edf4fb;--navy:#e5eff9;--muted:#a6b6c8;--blue:#72b9df;--cyan:#54c0cc;--shadow:0 12px 32px rgba(0,0,0,.18)}.theme-dark .field input,.theme-dark .field textarea,.theme-dark .field select{background:#102034;border-color:#344a61;color:#e6edf5}.theme-dark .btn{background:#1b3048;border-color:#344a61;color:#e6edf5}.theme-dark .btn.primary{background:linear-gradient(135deg,#246b91,#1a5278);color:white}.theme-dark .pill{background:#1b3048;border-color:#344a61;color:#b9c8d8}.theme-dark .empty{background:#142337;border-color:#344a61}.theme-dark .report-card,.theme-dark .card{background:var(--surface)}.theme-dark .field label{color:#c5d3e1}.theme-dark .item{border-color:#2a3d52}.theme-dark .footer{border-color:#2a3d52}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
@@ -58,6 +60,8 @@
  <button class="nav-link" data-view="skills"><span class="nav-icon">▤</span>مكتبة المهارات</button>
  <button class="nav-link" data-view="organizations"><span class="nav-icon">▦</span>المنشآت</button>
  <button class="nav-link" data-view="machines"><span class="nav-icon">⚙</span>الماكينات</button>
+ <button class="nav-link" data-view="faults"><span class="nav-icon">!</span>بلاغات الأعطال</button>
+ <button class="nav-link" data-view="settings"><span class="nav-icon">☷</span>الإعدادات</button>
  <div class="side-label" style="margin-top:18px">إدارة المنصة</div>
  <div style="padding:8px 12px;color:#9bb0c3;font-size:11px;line-height:1.8">تظهر هنا الخدمات المتاحة لحسابك. الأقسام غير المفعّلة لن تعرض وظائف وهمية.</div>
 </aside>
@@ -74,7 +78,7 @@
  <div class="grid">
   <div class="card wide"><h2>آخر المهارات المضافة</h2><div id="recentSkills"><div class="empty">جاري تحميل البيانات...</div></div></div>
   <div class="card side"><h2>ابدأ من هنا</h2><p class="muted">أفضل بداية هي إنشاء منشأتك، ثم إضافة الماكينات، وبعدها توثيق المهارات خطوة بخطوة.</p><button class="btn primary" style="width:100%;margin:5px 0" data-go="organizations">+ إضافة منشأة</button><button class="btn" style="width:100%;margin:5px 0" data-go="skills">+ توثيق مهارة</button><div class="tiny" style="margin-top:14px">مجالات البداية: صيانة القوالب، دوائر التبريد، ماكينات الحقن، فحص الجودة، وتشخيص الأعطال.</div></div>
-  <div class="card full"><h2>مبدأ مِيدان للسلامة</h2><p class="muted">المحتوى الذي يضيفه المستخدم يُحفظ كمسودة، ولا يصبح إجراءً معتمدًا بمجرد نشره. يجب مراجعة أي إجراء يؤثر على سلامة العامل أو الماكينة بواسطة شخص مختص قبل تطبيقه.</p></div>
+  <div class="card side"><h2>بلاغات الأعطال المفتوحة</h2><div class="num" id="statFaults">0</div><p class="muted">تابع البلاغات التي تحتاج إلى فحص داخل منشآتك.</p><button class="btn" style="width:100%" data-go="faults">فتح مركز البلاغات</button></div><div class="card full"><h2>مبدأ مِيدان للسلامة</h2><p class="muted">المحتوى الذي يضيفه المستخدم يُحفظ كمسودة، ولا يصبح إجراءً معتمدًا بمجرد نشره. يجب مراجعة أي إجراء يؤثر على سلامة العامل أو الماكينة بواسطة شخص مختص قبل تطبيقه.</p></div>
  </div>
 </section>
 
@@ -106,6 +110,20 @@
  <div class="grid">
   <div class="card wide"><h2>الماكينات المسجلة</h2><div class="field"><label>المنشأة</label><select id="machineOrg"></select></div><div id="machineList"><div class="empty">لا توجد ماكينات مسجلة.</div></div></div>
   <div class="card side"><h2>إضافة ماكينة</h2><div class="field"><label>اسم الماكينة *</label><input id="machineName" placeholder="مثال: ماكينة حقن رقم 3"></div><div class="field"><label>الشركة المصنعة</label><input id="manufacturer" placeholder="Arburg / Haitian / ..."></div><div class="field"><label>الموديل</label><input id="machineModel" placeholder="Model"></div><button class="btn primary" id="createMachine" style="width:100%">حفظ الماكينة</button></div>
+ </div>
+</section>
+
+<section class="view" id="view-faults"><div class="page-head"><div><h2>مركز بلاغات الأعطال</h2><p>سجّل الأعطال واربطها بالماكينات وتابع حالتها داخل منشآتك.</p></div></div>
+ <div class="grid">
+  <div class="card wide"><div class="page-head"><div><h3>سجل البلاغات</h3><p>البلاغات مرئية فقط لأعضاء المنشأة المصرح لهم.</p></div><select id="faultFilter" aria-label="تصفية البلاغات"><option value="all">كل الحالات</option><option value="open">مفتوحة</option><option value="investigating">قيد الفحص</option><option value="resolved">تم الحل</option><option value="closed">مغلقة</option></select></div><div id="faultList" aria-live="polite"><div class="empty">جاري تحميل البلاغات...</div></div></div>
+  <div class="card side"><h3>تسجيل بلاغ جديد</h3><div class="field"><label for="faultOrg">المنشأة *</label><select id="faultOrg"></select></div><div class="field"><label for="faultMachine">الماكينة (اختياري)</label><select id="faultMachine"><option value="">بدون ماكينة محددة</option></select></div><div class="field"><label for="faultTitle">عنوان العطل *</label><input id="faultTitle" maxlength="180" placeholder="مثال: ارتفاع حرارة زيت الهيدروليك"></div><div class="field"><label for="faultDescription">وصف العطل *</label><textarea id="faultDescription" maxlength="4000" placeholder="اكتب الأعراض ووقت ظهورها وما تم ملاحظته دون تنفيذ إجراء خطر."></textarea></div><div class="field"><label for="faultSeverity">الأولوية</label><select id="faultSeverity"><option value="low">منخفضة</option><option value="medium" selected>متوسطة</option><option value="high">مرتفعة</option><option value="critical">حرجة</option></select></div><button class="btn primary" id="createFaultReport" style="width:100%">إرسال البلاغ</button><p class="tiny">في الحالات الحرجة، اتبع خطة الطوارئ المعتمدة بالمصنع ولا تعتمد على التطبيق كبديل للاستجابة الفورية.</p></div>
+ </div>
+</section>
+<section class="view" id="view-settings"><div class="page-head"><div><h2>إعدادات الحساب</h2><p>إدارة بياناتك الأساسية وتفضيلات واجهة مِيدان.</p></div></div>
+ <div class="grid">
+  <div class="card wide"><h3>الملف المهني</h3><div class="field"><label for="profileEmail">البريد الإلكتروني</label><input id="profileEmail" type="email" readonly></div><div class="field"><label for="profileName">الاسم الظاهر</label><input id="profileName" maxlength="80" autocomplete="name" placeholder="اسمك المهني"></div><button class="btn primary" id="saveProfile">حفظ بيانات الملف</button><div class="message" id="profileMessage" role="status"></div></div>
+  <div class="card side"><h3>المظهر</h3><p class="muted">اختر المظهر المريح لك. يتم حفظ اختيارك على هذا الجهاز فقط.</p><button class="btn" id="themeToggle" type="button" aria-pressed="false">تفعيل الوضع الداكن</button><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><h3>الجلسة</h3><p class="muted">يمكنك إنهاء الجلسة من أي جهاز باستخدام تسجيل الخروج.</p><button class="btn" id="settingsSignOut">تسجيل الخروج</button></div>
+  <div class="card full"><h3>تغيير كلمة المرور</h3><div class="two"><div class="field"><label for="settingsPassword">كلمة المرور الجديدة</label><input id="settingsPassword" type="password" autocomplete="new-password" minlength="12" placeholder="12 حرفًا على الأقل"></div><div class="field"><label for="settingsPasswordConfirm">تأكيد كلمة المرور</label><input id="settingsPasswordConfirm" type="password" autocomplete="new-password" minlength="12" placeholder="أعد كتابة كلمة المرور"></div></div><button class="btn primary" id="changePassword">تحديث كلمة المرور</button><div class="message" id="settingsMessage" role="status"></div><p class="tiny">لا تشارك كلمة المرور مع أي شخص. يجب تفعيل حماية كلمات المرور المسربة من إعدادات Auth في Supabase أيضًا؛ فالفحص داخل الواجهة طبقة مساعدة فقط.</p></div>
  </div>
 </section>
 </main></div>
