@@ -51,12 +51,6 @@
  <div class="brand"><div class="mark">م</div><div><strong>MIDAAN</strong><small>المعرفة الصناعية تبدأ من أرض المصنع</small></div></div>
  <div class="top-actions"><span class="user-email" id="userEmail"></span><button class="btn" id="signOut">تسجيل الخروج</button></div>
 </header>
-<section class="hero"><div><div class="eyebrow">مساحة العمل الصناعية · النسخة التجريبية</div><h1>حوّل الخبرة إلى<br>معرفة يمكن الرجوع إليها.</h1><p>وثّق المهارات والإجراءات، اربطها بالمنشأة والماكينة، واحتفظ بخبرة فريقك في مكان منظم وقابل للمراجعة.</p></div><div class="hero-mark">مِيدان</div></section>
-<div class="grid">
- <div class="card stat"><div class="num" id="statOrgs">0</div><div class="label">المنشآت المرتبطة بحسابك</div></div>
- <div class="card stat"><div class="num" id="statSkills">0</div><div class="label">المهارات المسجلة</div></div>
- <div class="card stat"><div class="num" id="statDrafts">0</div><div class="label">مسودات قيد التطوير</div></div>
-</div>
 <div class="app-layout">
 <aside class="sidebar" aria-label="التنقل الرئيسي">
  <div class="side-label">مساحة العمل</div>
@@ -70,7 +64,13 @@
 <main class="workspace">
 <div id="globalMessage" class="message"></div>
 
-<section class="view active" id="view-overview"><div class="page-head"><div><h2>الرئيسية</h2><p>نظرة سريعة على نشاطك الصناعي في مِيدان</p></div></div>
+<section class="view active" id="view-overview"><section class="hero"><div><div class="eyebrow">مساحة العمل الصناعية · النسخة التجريبية</div><h1>حوّل الخبرة إلى<br>معرفة يمكن الرجوع إليها.</h1><p>وثّق المهارات والإجراءات، اربطها بالمنشأة والماكينة، واحتفظ بخبرة فريقك في مكان منظم وقابل للمراجعة.</p></div><div class="hero-mark">مِيدان</div></section>
+<div class="grid">
+ <div class="card stat"><div class="num" id="statOrgs">0</div><div class="label">المنشآت المرتبطة بحسابك</div></div>
+ <div class="card stat"><div class="num" id="statSkills">0</div><div class="label">المهارات المسجلة</div></div>
+ <div class="card stat"><div class="num" id="statDrafts">0</div><div class="label">مسودات قيد التطوير</div></div>
+</div>
+
  <div class="grid">
   <div class="card wide"><h2>آخر المهارات المضافة</h2><div id="recentSkills"><div class="empty">جاري تحميل البيانات...</div></div></div>
   <div class="card side"><h2>ابدأ من هنا</h2><p class="muted">أفضل بداية هي إنشاء منشأتك، ثم إضافة الماكينات، وبعدها توثيق المهارات خطوة بخطوة.</p><button class="btn primary" style="width:100%;margin:5px 0" data-go="organizations">+ إضافة منشأة</button><button class="btn" style="width:100%;margin:5px 0" data-go="skills">+ توثيق مهارة</button><div class="tiny" style="margin-top:14px">مجالات البداية: صيانة القوالب، دوائر التبريد، ماكينات الحقن، فحص الجودة، وتشخيص الأعطال.</div></div>
