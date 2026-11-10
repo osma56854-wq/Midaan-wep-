@@ -23,7 +23,7 @@ jobs:
           node --check skill-upload-utils.js
           node --check sw.js
       - name: Test navigation regression checks
-        run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs tests/maintenance.test.cjs tests/marketplace.test.cjs tests/rfq.test.cjs
+        run: node --test tests/navigation.test.cjs tests/skill-upload-utils.test.cjs tests/maintenance.test.cjs tests/marketplace.test.cjs tests/rfq.test.cjs tests/team.test.cjs
       - name: Check required frontend files and security settings
         run: |
           test -s index.html
@@ -33,6 +33,10 @@ jobs:
           test -s tests/maintenance.test.cjs
           test -s tests/marketplace.test.cjs
           test -s tests/rfq.test.cjs
+          test -s tests/team.test.cjs
+          test -s supabase/migrations/20261110210000_organization_invitations_and_team_roles.sql
+          test -s supabase/migrations/20261110211000_harden_organization_invitation_access.sql
+          test -s supabase/migrations/20261110211000_harden_organization_invitation_access.sql
           test -s supabase/migrations/20261110200000_global_rfq_and_quotes.sql
           test -s supabase/migrations/20261110201000_limit_rfq_updates_to_status.sql
           test -s supabase/migrations/20261110202000_snapshot_rfq_title.sql
