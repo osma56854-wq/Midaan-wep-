@@ -77,7 +77,7 @@ test("maintenance status updates enforce manager or assignee access in the clien
 });
 
 test("HTML element IDs are unique across all workspace pages", () => {
-  const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(match => match[1]);
+  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   assert.deepEqual([...new Set(duplicates)], [], "duplicate HTML IDs break controls and navigation");
 });
@@ -98,4 +98,9 @@ test("language preference is stored per account and switches document direction"
   assert.ok(js.includes('document.documentElement.dir=currentLanguage==="ar"?"rtl":"ltr"'));
   assert.ok(js.includes('document.documentElement.lang=currentLanguage'));
   assert.ok(js.includes("const i18n="));
+});
+
+test("navigation includes all global platform sections", () => {
+  assert.ok(html.includes('data-view="rfqs"'));
+  assert.ok(js.includes('"rfqs"'));
 });
