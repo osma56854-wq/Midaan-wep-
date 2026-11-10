@@ -58,7 +58,52 @@ db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY")showRecoveryF
 $("authSubmit").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;const b=$("authSubmit");b.disabled=true;try{if(!email||!password)throw new Error("اكتب البريد الإلكتروني وكلمة المرور.");if(mode==="signup"){if(password.length<12)throw new Error("كلمة المرور يجب ألا تقل عن 12 حرفًا.");if(await isCompromisedPassword(password))throw new Error("كلمة المرور دي ظهرت في تسريبات معروفة. اختار كلمة مرور مختلفة.");const {data,error}=await db.auth.signUp({email,password,options:{data:{display_name:$("displayName").value.trim()}}});if(error)throw error;if(!data.session){showMessage("authMessage","تم إنشاء الحساب. افتح رسالة التأكيد في بريدك الإلكتروني، ثم ارجع وسجّل الدخول.");return}}else{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error}setScreen(true);await loadAll()}catch(e){const target=$("appScreen").classList.contains("hidden")?"authMessage":"globalMessage";showMessage(target,e.message||"حدث خطأ غير متوقع.",true)}finally{b.disabled=false}};
 $("signOut").onclick=async()=>{await db.auth.signOut();setScreen(false)};
 $("createOrg").onclick=async()=>{const name=$("orgName").value.trim(),b=$("createOrg");if(name.length<2){showMessage("globalMessage","اكتب اسم المنشأة بشكل صحيح.",true);return}b.disabled=true;try{const {error}=await db.rpc("create_organization_with_owner",{p_name:name});if(error)throw error;$("orgName").value="";await loadAll();showMessage("globalMessage","تم إنشاء المنشأة وربط مالكها بحسابك في عملية واحدة.")}catch(e){showMessage("globalMessage",e.message||"تعذر إنشاء المنشأة.",true)}finally{b.disabled=false}};
-$("saveSkill").onclick=async()=>{const orgId=$("skillOrg").value,title=$("skillTitle").value.trim();if(!orgId){showMessage("globalMessage","أنشئ منشأة أولًا قبل تسجيل المهارة.",true);return}if(title.length<4){showMessage("globalMessage","عنوان المهارة يجب أن يكون 4 أحرف على الأقل.",true);return}const steps=$("skillSteps").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map(instruction=>({instruction}));const b=$("saveSkill");b.disabled=true;try{const files=Array.from($("skillFiles").files||[]);if(files.length>5)throw new Error("يمكن إرفاق 5 ملفات كحد أقصى.");const allowedTypes=["image/jpeg","image/png","image/webp","video/mp4","video/webm","application/pdf"];for(const file of files){if(!allowedTypes.includes(file.type))throw new Error("نوع ملف غير مدعوم: "+file.name);if(file.size>25*1024*1024)throw new Error("حجم الملف يتجاوز 25 ميجابايت: "+file.name)}const created=await api("create_skill",{organization_id:orgId,title,summary:$("skillSummary").value.trim(),category_id:$("skillCategory").value||null,task_type:$("taskType").value,safety_level:$("safety").value,steps});if(!created?.id)throw new Error("تم إرسال المهارة لكن لم يُرجع الخادم معرّفها؛ راجع المهارات قبل إعادة المحاولة.");if(files.length){const {data:{user}}=await db.auth.getUser();for(const file of files){const ext=(file.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,8)||"bin";const path=orgId+"/"+user.id+"/"+created.id+"/"+crypto.randomUUID()+"."+ext;const {error:uploadError}=await db.storage.from("skill-evidence").upload(path,file,{contentType:file.type,upsert:false});if(uploadError)throw new Error("تم حفظ المهارة، لكن تعذر رفع الملف "+file.name+": "+uploadError.message);const mediaType=file.type.startsWith("image/")?"image":file.type.startsWith("video/")?"video":"document";const {error:mediaError}=await db.from("skill_media").insert({skill_id:created.id,uploaded_by:user.id,storage_path:path,media_type:mediaType,caption:file.name});if(mediaError){await db.storage.from("skill-evidence").remove([path]);throw new Error("تم حفظ المهارة، لكن تعذر ربط الملف "+file.name+": "+mediaError.message)}}}$("skillTitle").value="";$("skillSummary").value="";$("skillSteps").value="";$("skillFiles").value="";await loadSkills();showMessage("globalMessage",files.length?"تم حفظ المهارة ورفع المرفقات كمسودة. لن تظهر كإجراء معتمد قبل المراجعة.":"تم حفظ المهارة كمسودة. لن تظهر كإجراء معتمد قبل المراجعة.")}catch(e){showMessage("globalMessage",e.message||"تعذر حفظ المهارة.",true)}finally{b.disabled=false}};
+$("saveSkill").onclick=async()=>{
+  const orgId=$("skillOrg").value,title=$("skillTitle").value.trim();
+  if(!orgId){showMessage("globalMessage","أنشئ منشأة أولًا قبل تسجيل المهارة.",true);return}
+  if(title.length<4){showMessage("globalMessage","عنوان المهارة يجب أن يكون 4 أحرف على الأقل.",true);return}
+  const steps=$("skillSteps").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map(instruction=>({instruction}));
+  const b=$("saveSkill");b.disabled=true;
+  try{
+    const files=window.MidaanSkillUploads.validateFiles(Array.from($("skillFiles").files||[]));
+    const created=await api("create_skill",{organization_id:orgId,title,summary:$("skillSummary").value.trim(),category_id:$("skillCategory").value||null,task_type:$("taskType").value,safety_level:$("safety").value,steps});
+    if(!created?.id)throw new Error("تم إرسال المهارة لكن لم يُرجع الخادم معرّفها؛ راجع المهارات قبل إعادة المحاولة.");
+    if(files.length){
+      const {data:{user}}=await db.auth.getUser();
+      if(!user?.id)throw new Error("تعذر التحقق من المستخدم لرفع المرفقات. المهارة محفوظة كمسودة دون مرفقات.");
+      const uploadedPaths=[],metadataPaths=[];
+      try{
+        for(const file of files){
+          const ext=(file.name.split(".").pop()||"bin").toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,8)||"bin";
+          const path=orgId+"/"+user.id+"/"+created.id+"/"+crypto.randomUUID()+"."+ext;
+          const {error:uploadError}=await db.storage.from("skill-evidence").upload(path,file,{contentType:file.type,upsert:false});
+          if(uploadError)throw new Error("تعذر رفع الملف "+file.name+": "+uploadError.message);
+          uploadedPaths.push(path);
+          const mediaType=file.type.startsWith("image/")?"image":file.type.startsWith("video/")?"video":"document";
+          const {error:mediaError}=await db.from("skill_media").insert({skill_id:created.id,uploaded_by:user.id,storage_path:path,media_type:mediaType,caption:file.name});
+          if(mediaError)throw new Error("تم رفع الملف "+file.name+" لكن تعذر ربطه بسجل المهارة: "+mediaError.message);
+          metadataPaths.push(path);
+        }
+      }catch(uploadFailure){
+        const cleanupFailures=[];
+        if(metadataPaths.length){
+          const {error:deleteRowsError}=await db.from("skill_media").delete().in("storage_path",metadataPaths);
+          if(deleteRowsError)cleanupFailures.push("تعذر حذف بعض سجلات المرفقات");
+        }
+        if(uploadedPaths.length){
+          const {error:removeFilesError}=await db.storage.from("skill-evidence").remove(uploadedPaths);
+          if(removeFilesError)cleanupFailures.push("تعذر حذف بعض الملفات المرفوعة");
+        }
+        const cleanupNote=cleanupFailures.length?" تنبيه: "+cleanupFailures.join(" و")+". يلزم فحص المرفقات يدويًا.":" تم تنظيف الملفات وسجلات المرفقات التي رُفعت في هذه المحاولة.";
+        throw new Error(uploadFailure.message+" المهارة نفسها ما زالت محفوظة كمسودة دون اكتمال المرفقات."+cleanupNote);
+      }
+    }
+    $("skillTitle").value="";$("skillSummary").value="";$("skillSteps").value="";$("skillFiles").value="";
+    await loadSkills();
+    showMessage("globalMessage",files.length?"تم حفظ المهارة ورفع المرفقات كمسودة. لن تظهر كإجراء معتمد قبل المراجعة.":"تم حفظ المهارة كمسودة. لن تظهر كإجراء معتمد قبل المراجعة.");
+  }catch(e){showMessage("globalMessage",e.message||"تعذر حفظ المهارة.",true)}
+  finally{b.disabled=false}
+};
 $("createMachine").onclick=async()=>{const orgId=$("machineOrg").value,name=$("machineName").value.trim(),b=$("createMachine");if(!orgId||name.length<2){showMessage("globalMessage","اختر منشأة واكتب اسم الماكينة.",true);return}b.disabled=true;try{const {data:{user}}=await db.auth.getUser();const {error}=await db.from("machines").insert({organization_id:orgId,name,manufacturer:$("manufacturer").value.trim()||null,model:$("machineModel").value.trim()||null,created_by:user.id});if(error)throw error;$("machineName").value="";$("manufacturer").value="";$("machineModel").value="";await loadMachines();showMessage("globalMessage","تم تسجيل الماكينة.")}catch(e){showMessage("globalMessage",e.message||"تعذر حفظ الماكينة.",true)}finally{b.disabled=false}};
 $("skillOrg").onchange=()=>loadSkills().catch(e=>showMessage("globalMessage",e.message,true));$("machineOrg").onchange=()=>loadMachines().catch(e=>showMessage("globalMessage",e.message,true));$("skillSearch").oninput=renderSkillLists;
 document.querySelectorAll("[data-view]").forEach(t=>t.onclick=()=>activateView(t.dataset.view));document.querySelectorAll("[data-go]").forEach(t=>t.onclick=()=>activateView(t.dataset.go));
