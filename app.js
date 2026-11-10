@@ -280,7 +280,7 @@ function renderRfqs(){
   const close=own&&r.status==="open"?'<button class="btn" data-rfq-close="'+escapeHtml(r.id)+'">إغلاق الطلب</button>':"";
   return '<article class="marketplace-offer"><div class="item-head"><div><h3>'+escapeHtml(r.title)+'</h3><div class="tiny">'+escapeHtml(r.buyer_display_name)+' · '+escapeHtml(r.country_code)+'</div></div><span class="pill '+(r.status==="open"?"green":"gold")+'">'+escapeHtml(rfqStatusLabels[r.status]||r.status)+'</span></div><div class="meta"><span class="pill">'+escapeHtml(marketCategoryLabels[r.category]||r.category)+'</span>'+(r.quantity?'<span class="pill">'+escapeHtml(r.quantity+" "+(r.unit||""))+'</span>':"")+(r.target_date?'<span class="pill">مطلوب قبل '+escapeHtml(new Date(r.target_date+"T00:00:00").toLocaleDateString())+'</span>':"")+'</div><p>'+escapeHtml(r.description)+'</p><div class="marketplace-actions">'+action+close+'</div>'+quoteHtml+'</article>';
  }).join(""):'<div class="empty">لا توجد طلبات عروض أسعار مطابقة.</div>';
- $("myRfqQuotes").innerHTML=myRfqQuotes.length?myRfqQuotes.map(q=>'<article class="market-request"><div class="item-head"><strong>'+escapeHtml(q.industrial_rfqs?.title||"طلب عروض أسعار")+'</strong><span class="pill">'+escapeHtml(q.status==="pending"?"قيد المراجعة":q.status==="accepted"?"مقبول":q.status==="rejected"?"مرفوض":"منسحب")+'</span></div><div class="tiny">'+escapeHtml(Number(q.price_amount).toLocaleString()+" "+q.currency_code)+' · '+escapeHtml(q.lead_days+" يوم")+'</div><p>'+escapeHtml(q.notes)+'</p>'+(q.status==="pending"?'<button class="btn" data-quote-id="'+escapeHtml(q.id)+'" data-quote-status="withdrawn">سحب العرض</button>':"")+'</article>').join(""):'<div class="empty">لم تقدم عروضًا بعد.</div>';
+ $("myRfqQuotes").innerHTML=myRfqQuotes.length?myRfqQuotes.map(q=>'<article class="market-request"><div class="item-head"><strong>'+escapeHtml(q.rfq_title||"طلب عروض أسعار")+'</strong><span class="pill">'+escapeHtml(q.status==="pending"?"قيد المراجعة":q.status==="accepted"?"مقبول":q.status==="rejected"?"مرفوض":"منسحب")+'</span></div><div class="tiny">'+escapeHtml(Number(q.price_amount).toLocaleString()+" "+q.currency_code)+' · '+escapeHtml(q.lead_days+" يوم")+'</div><p>'+escapeHtml(q.notes)+'</p>'+(q.status==="pending"?'<button class="btn" data-quote-id="'+escapeHtml(q.id)+'" data-quote-status="withdrawn">سحب العرض</button>':"")+'</article>').join(""):'<div class="empty">لم تقدم عروضًا بعد.</div>';
 }
 async function loadRfqs(){
  if(!currentUserId)return;
@@ -289,7 +289,7 @@ async function loadRfqs(){
  if(old&&organizations.some(o=>o.id===old))orgSelect.value=old;
  const {data,error}=await db.from("industrial_rfqs").select("id,organization_id,created_by,buyer_display_name,title,description,category,country_code,quantity,unit,target_date,status,created_at,rfq_quotes(id,supplier_id,price_amount,currency_code,lead_days,notes,status,professional_profiles(display_name,headline))").order("created_at",{ascending:false}).limit(100);
  if(error)throw error;industrialRfqs=data||[];
- const {data:quotes,error:quotesError}=await db.from("rfq_quotes").select("id,rfq_id,price_amount,currency_code,lead_days,notes,status,industrial_rfqs(title)").eq("supplier_id",currentUserId).order("created_at",{ascending:false}).limit(50);
+ const {data:quotes,error:quotesError}=await db.from("rfq_quotes").select("id,rfq_id,rfq_title,price_amount,currency_code,lead_days,notes,status").eq("supplier_id",currentUserId).order("created_at",{ascending:false}).limit(50);
  if(quotesError)throw quotesError;myRfqQuotes=quotes||[];
  renderRfqs();
 }
