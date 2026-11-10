@@ -36,8 +36,7 @@ function applyLanguage(root=document){
    if(next!==val)el.setAttribute(attr,next);
   }
  });
- const toggle=$("languageToggle");
- if(toggle){toggle.textContent=currentLanguage==="ar"?"EN":"عربي";toggle.setAttribute("aria-label",currentLanguage==="ar"?"Switch to English":"التبديل إلى العربية")}
+ for(const id of ["languageToggle","authLanguageToggle"]){const toggle=$(id);if(toggle){toggle.textContent=currentLanguage==="ar"?"EN":"عربي";toggle.setAttribute("aria-label",currentLanguage==="ar"?"Switch to English":"التبديل إلى العربية")}}
  const theme=$("topThemeToggle");
  if(theme){const dark=document.documentElement.classList.contains("theme-dark");theme.textContent=currentLanguage==="ar"?(dark?"الوضع الفاتح":"الوضع الداكن"):(dark?"Light mode":"Dark mode")}
  document.title=currentLanguage==="ar"?"مِيدان | MIDAAN":"MIDAAN | Industrial platform";
@@ -392,8 +391,11 @@ function applyTheme(dark){
  document.documentElement.style.colorScheme=dark?"dark":"light";
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=dark?"#0b1420":"#10243a";
  const label=currentLanguage==="ar"?(dark?"تفعيل الوضع الفاتح":"تفعيل الوضع الداكن"):(dark?"Enable light mode":"Enable dark mode");
- for(const id of ["themeToggle","topThemeToggle"]){const button=$(id);if(button){button.textContent=id==="topThemeToggle"?(currentLanguage==="ar"?(dark?"الوضع الفاتح":"الوضع الداكن"):(dark?"Light mode":"Dark mode")):label;button.setAttribute("aria-pressed",String(!!dark))}}
+ for(const id of ["themeToggle","topThemeToggle","authThemeToggle"]){const button=$(id);if(button){button.textContent=id==="topThemeToggle"?(currentLanguage==="ar"?(dark?"الوضع الفاتح":"الوضع الداكن"):(dark?"Light mode":"Dark mode")):label;button.setAttribute("aria-pressed",String(!!dark))}}
 }
+applyTheme(localStorage.getItem("midaan-theme")==="dark");
+applyLanguage();
+
 async function submitFaultReport(){const organization_id=$("faultOrg").value,title=$("faultTitle").value.trim(),description=$("faultDescription").value.trim(),severity=$("faultSeverity").value,machine_id=$("faultMachine").value||null,b=$("createFaultReport");if(!organization_id)throw new Error("أنشئ منشأة أو اختر منشأة أولًا.");if(title.length<4)throw new Error("عنوان البلاغ يجب أن يكون 4 أحرف على الأقل.");if(description.length<10)throw new Error("اكتب وصفًا واضحًا للعطل لا يقل عن 10 أحرف.");b.disabled=true;try{const {data:{user}}=await db.auth.getUser();const {error}=await db.from("fault_reports").insert({organization_id,machine_id,reported_by:user.id,title,description,severity});if(error)throw error;$("faultTitle").value="";$("faultDescription").value="";await loadFaultReports();showMessage("globalMessage","تم تسجيل البلاغ بنجاح.");}finally{b.disabled=false}}
 $("faultOrg").onchange=loadFaultMachines;
 $("faultFilter").onchange=renderFaultReports;
@@ -404,7 +406,10 @@ $("changePassword").onclick=async()=>{const password=$("settingsPassword").value
 function toggleTheme(){const dark=!document.documentElement.classList.contains("theme-dark");localStorage.setItem("midaan-theme",dark?"dark":"light");applyTheme(dark)}
 $("themeToggle").onclick=toggleTheme;
 $("topThemeToggle").onclick=toggleTheme;
-$("languageToggle").onclick=()=>setLanguage(currentLanguage==="ar"?"en":"ar").catch(e=>showMessage("globalMessage",e.message||"تعذر تغيير اللغة.",true));
+$("authThemeToggle").onclick=toggleTheme;
+const changeLanguage=()=>setLanguage(currentLanguage==="ar"?"en":"ar").catch(e=>showMessage("globalMessage",e.message||"تعذر تغيير اللغة.",true));
+$("languageToggle").onclick=changeLanguage;
+$("authLanguageToggle").onclick=changeLanguage;
 $("settingsSignOut").onclick=()=>$("signOut").click();
 if("serviceWorker" in navigator && location.protocol==="https:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
 
