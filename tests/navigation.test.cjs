@@ -75,3 +75,9 @@ test("maintenance status updates enforce manager or assignee access in the clien
   assert.ok(js.includes('if(!manager&&task.assigned_to!==currentUserId)'));
   assert.ok(js.includes('completed_at:status==="completed"?now:null'));
 });
+
+test("HTML element IDs are unique across all workspace pages", () => {
+  const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(match => match[1]);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  assert.deepEqual([...new Set(duplicates)], [], "duplicate HTML IDs break controls and navigation");
+});
