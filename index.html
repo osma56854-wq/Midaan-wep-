@@ -64,12 +64,13 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
 .top-actions{flex-wrap:wrap}
 @media(max-width:560px){.top-actions{gap:6px}.top-actions .btn{padding:8px 10px;font-size:12px}}
 
+.auth-preferences{display:flex;justify-content:flex-end;gap:8px;margin:-8px 0 16px}
 </style>
 </head>
 <body>
 <div id="authScreen" class="shell auth-wrap">
   <div class="card auth-card">
-    <div class="brand" style="margin-bottom:22px"><div class="mark">م</div><div><strong>MIDAAN</strong><small>شبكة المعرفة والمهارات الصناعية</small></div></div>
+    <div class="brand" style="margin-bottom:22px"><div class="mark">م</div><div><strong>MIDAAN</strong><small>شبكة المعرفة والمهارات الصناعية</small></div></div><div class="auth-preferences"><button class="btn" id="authThemeToggle" type="button" aria-pressed="false">الوضع الداكن</button><button class="btn" id="authLanguageToggle" type="button">EN</button></div>
     <h1 id="authTitle">أهلاً بك في مِيدان</h1><p class="muted" id="authSub">سجّل دخولك للوصول إلى مساحة العمل الصناعية.</p>
     <div class="auth-switch"><button class="btn primary" id="showLogin">تسجيل الدخول</button><button class="btn" id="showSignup">إنشاء حساب</button></div>
     <div id="signupName" class="field hidden"><label>الاسم الظاهر</label><input id="displayName" autocomplete="name" placeholder="اسمك أو اسمك المهني"></div>
