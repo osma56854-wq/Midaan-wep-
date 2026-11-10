@@ -4,6 +4,7 @@ const fs=require("node:fs");
 const html=fs.readFileSync("index.html","utf8");
 const js=fs.readFileSync("app.js","utf8");
 const sql=fs.readFileSync("supabase/migrations/20261110210000_organization_invitations_and_team_roles.sql","utf8");
+const hardening=fs.readFileSync("supabase/migrations/20261110211000_harden_organization_invitation_access.sql","utf8");
 test("team workspace exposes member directory, invitation controls, and task assignment",()=>{
  for(const id of ["view-team","teamOrg","teamMembers","teamInvitations","teamInvitePanel","teamInviteEmail","teamInviteRole","createTeamInvite","teamInviteToken","copyTeamInvite","acceptTeamToken","acceptTeamInvite","maintenanceAssignee"])assert.ok(html.includes('id="'+id+'"'),"missing "+id);
  assert.ok(html.includes('data-view="team"'));
@@ -35,4 +36,7 @@ test("team RPC wrappers are invoker functions and private implementation functio
  assert.ok(sql.includes("language sql security invoker"));
  assert.ok(sql.includes("grant execute on function private.accept_org_invitation(text) to authenticated"));
  assert.ok(sql.includes("grant execute on function public.accept_organization_invitation(text) to authenticated"));
+ assert.ok(hardening.includes("revoke all on schema private from public,anon"));
+ assert.ok(hardening.includes("revoke all on function private.accept_org_invitation(text) from public,anon"));
+ assert.ok(hardening.includes("organization_invitations_select_managers"));
 });
