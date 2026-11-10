@@ -65,6 +65,7 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
 @media(max-width:560px){.top-actions{gap:6px}.top-actions .btn{padding:8px 10px;font-size:12px}}
 
 .auth-preferences{display:flex;justify-content:flex-end;gap:8px;margin:-8px 0 16px}
+.team-member{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;background:var(--surface)}.team-member .meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.team-invite{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;background:var(--surface)}
 </style>
 </head>
 <body>
@@ -103,6 +104,7 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
  <button class="nav-link" data-view="machines"><span class="nav-icon">⚙</span>الماكينات</button>
  <button class="nav-link" data-view="maintenance"><span class="nav-icon">▣</span>الصيانة الوقائية</button>
  <button class="nav-link" data-view="faults"><span class="nav-icon">!</span>بلاغات الأعطال</button>
+ <button class="nav-link" data-view="team"><span class="nav-icon">♙</span>فريق العمل</button>
  <button class="nav-link" data-view="rfqs"><span class="nav-icon">▤</span>طلبات عروض الأسعار</button>
     <button class="nav-link" data-view="marketplace"><span class="nav-icon">⇄</span>السوق الصناعي</button>
  <button class="nav-link" data-view="settings"><span class="nav-icon">☷</span>الإعدادات</button>
@@ -169,9 +171,10 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
    <div class="field"><label for="maintenanceDescription">وصف ونطاق العمل</label><textarea id="maintenanceDescription" maxlength="3000" placeholder="اكتب نطاق الفحص أو الصيانة والملاحظات المطلوبة."></textarea></div>
    <div class="field"><label for="maintenanceDue">موعد الاستحقاق *</label><input id="maintenanceDue" type="datetime-local" required></div>
    <div class="field"><label for="maintenanceInterval">تكرار المهمة بالأيام (اختياري)</label><input id="maintenanceInterval" type="number" min="1" max="3650" step="1" placeholder="مثال: 30"></div>
+   <div class="field"><label for="maintenanceAssignee">إسناد المهمة إلى عضو الفريق</label><select id="maintenanceAssignee"></select></div>
    <div class="field"><label for="maintenancePriority">الأولوية</label><select id="maintenancePriority"><option value="low">منخفضة</option><option value="medium" selected>متوسطة</option><option value="high">مرتفعة</option><option value="critical">حرجة</option></select></div>
    <button class="btn primary" id="createMaintenance" style="width:100%">حفظ جدول الصيانة</button>
-   <p class="tiny" id="maintenanceCreateHint">سيتم إسناد المهمة إلى حسابك حاليًا. إسنادها لأعضاء آخرين يتطلب تفعيل إدارة أعضاء المنشأة أولًا.</p>
+   <p class="tiny" id="maintenanceCreateHint">اختر عضوًا نشطًا من فريق المنشأة لتنفيذ المهمة.</p>
    <p class="tiny">هذه أداة تنظيمية ولا تستبدل تعليمات الشركة المصنعة أو إجراءات العزل والسلامة المعتمدة.</p>
   </div>
  </div>
@@ -184,6 +187,33 @@ html[dir="ltr"] .marketplace-actions,html[dir="ltr"] .form-actions{direction:ltr
  </div>
 </section>
 
+
+
+<section class="view" id="view-team">
+ <div class="page-head"><div><h2>فريق المنشأة</h2><p>أضف الفنيين والمهندسين والمراجعين، ونظّم صلاحياتهم ومهامهم داخل المصنع.</p></div></div>
+ <div class="grid">
+  <div class="card wide">
+   <div class="field"><label for="teamOrg">المنشأة</label><select id="teamOrg"></select></div>
+   <h3>أعضاء الفريق</h3><div id="teamMembers" aria-live="polite"><div class="empty">جاري تحميل أعضاء الفريق...</div></div>
+   <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+   <h3>الدعوات المعلقة</h3><div id="teamInvitations" aria-live="polite"><div class="empty">لا توجد دعوات معلقة.</div></div>
+  </div>
+  <div class="card side hidden" id="teamInvitePanel">
+   <h3>دعوة عضو جديد</h3>
+   <p class="tiny">اكتب البريد الإلكتروني الذي سيُسجل به العضو. أنشئ رمز دعوة آمنًا ثم أرسله له بنفسك عبر قناة موثوقة. الرمز صالح لمدة 7 أيام ويُستخدم مرة واحدة.</p>
+   <div class="field"><label for="teamInviteEmail">البريد الإلكتروني *</label><input id="teamInviteEmail" type="email" maxlength="254" autocomplete="off" placeholder="technician@example.com"></div>
+   <div class="field"><label for="teamInviteRole">الدور</label><select id="teamInviteRole"><option value="technician">فني</option><option value="engineer">مهندس</option><option value="reviewer">مراجع</option></select></div>
+   <button class="btn primary" id="createTeamInvite" style="width:100%">إنشاء دعوة</button>
+   <div class="message" id="teamMessage" role="status"></div>
+   <div class="hidden" id="teamInviteResult"><div class="field"><label for="teamInviteToken">رمز الدعوة — أرسله للعضو</label><textarea id="teamInviteToken" readonly rows="3"></textarea></div><button class="btn" id="copyTeamInvite">نسخ رمز الدعوة</button></div>
+  </div>
+  <div class="card full">
+   <h3>لديك رمز دعوة؟</h3><p class="tiny">سجّل الدخول بالحساب الذي استقبل الدعوة، ثم أدخل الرمز هنا. يجب أن يطابق بريد حسابك البريد الذي أُرسلت إليه الدعوة.</p>
+   <div class="two"><div class="field"><label for="acceptTeamToken">رمز الدعوة</label><input id="acceptTeamToken" maxlength="64" autocomplete="off" placeholder="ألصق الرمز المكوّن من 64 حرفًا"></div><div class="field" style="align-self:end"><button class="btn primary" id="acceptTeamInvite" style="width:100%">قبول الدعوة والانضمام</button></div></div>
+   <div class="message" id="acceptTeamMessage" role="status"></div>
+  </div>
+ </div>
+</section>
 
 <section class="view" id="view-rfqs">
  <div class="page-head"><div><h2>طلبات عروض الأسعار</h2><p>المصانع تنشر احتياجاتها، والموردون ومقدمو الخدمات يقدمون عروضًا قابلة للمقارنة.</p></div></div>
