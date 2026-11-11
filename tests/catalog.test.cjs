@@ -12,6 +12,14 @@ test("industrial catalog exposes product listing, search, filters, images, and R
  assert.ok(js.includes("data-product-rfq"));
  assert.ok(js.includes('activateView("rfqs")'));
 });
+test("failed product image uploads can be retried for the saved product without inserting a duplicate",()=>{
+ assert.ok(html.includes('id="retryProductImage"'));
+ assert.ok(js.includes('let pendingCatalogImage=null'));
+ assert.ok(js.includes('showCatalogImageRetry(data.id,file)'));
+ assert.ok(js.includes('uploadCatalogProductImage(pending.productId,pending.file)'));
+ assert.ok(js.includes('يمكنك الضغط على «إعادة محاولة رفع الصورة» دون إنشاء منتج جديد'));
+ assert.equal((js.match(/from\("industrial_products"\)\.insert\(payload\)/g)||[]).length,1);
+});
 test("catalog rows enforce public profile opt-in and seller ownership",()=>{
  assert.ok(sql.includes("alter table public.industrial_products enable row level security"));
  assert.ok(sql.includes("industrial_products_select_visible"));
@@ -32,5 +40,10 @@ test("product listings validate currency, quantity, and safe image MIME types",(
  assert.ok(sql.includes("min_order_qty>0"));
  assert.ok(js.includes('["image/jpeg","image/png","image/webp"]'));
  assert.ok(js.includes("file.size>5*1024*1024"));
+ assert.ok(js.includes("imageFailure=\"\""));
+ assert.ok(js.includes("فشل رفع الصورة: "));
+ assert.ok(js.includes("تعذر ربطها بالمنتج: "));
+ assert.ok(js.includes("تعذر تنظيف الملف المرفوع: "));
+ assert.ok(js.includes("المنتج محفوظ بدون صورة"));
  assert.ok(js.includes("^[A-Z]{3}$"));
 });

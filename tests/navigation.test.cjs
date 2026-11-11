@@ -12,6 +12,11 @@ test("all primary destinations have both navigation links and page containers", 
   }
 });
 
+test("account loading isolates section failures and loads machines before maintenance",()=>{
+  assert.match(js,/Promise\.allSettled\(sections\.map/);
+  assert.ok(js.indexOf("await loadMachines()")<js.indexOf("await loadMaintenance()"));
+  assert.match(js,/تعذر تحميل بعض الأقسام/);
+});
 test("navigation changes active page and supports browser history", () => {
   assert.ok(js.includes('document.querySelectorAll(".view")'));
   assert.ok(js.includes("history.pushState"));

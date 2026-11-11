@@ -27,6 +27,13 @@ test("UI does not allow non-manager roles to create maintenance tasks",()=>{
   assert.match(js,/\["owner","admin","engineer"\]\.includes\(role\)/);
   assert.match(js,/createMaintenance"\)\.disabled=!allowed/);
 });
+test("maintenance assignee selector is populated from active organization team members",()=>{
+  assert.match(js,/async function loadMaintenanceAssignees\(\)/);
+  assert.match(js,/getTeamMembers\(orgId,true\)/);
+  assert.match(js,/members\.filter\(m=>m.status==="active"\)/);
+  assert.match(js,/assigned_to:\$\("maintenanceAssignee"\)\?\.value\|\|user\.id/);
+  assert.match(js,/أي عضو نشط في فريق المنشأة/);
+});
 test("maintenance status changes set and clear completion timestamps consistently",()=>{
   assert.match(js,/completed_at:status==="completed"\?now:null/);
   assert.match(js,/\["scheduled","in_progress"\]\.includes\(task\.status\)/);
