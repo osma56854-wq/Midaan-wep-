@@ -4,11 +4,11 @@ Last reviewed: 11 November 2026
 
 ## Current deployment
 
-- Frontend: https://osma56854-wq.github.io/Midaan-wep/
+- Frontend: https://osma56854-wq.github.io/Midaan-wep-/
 - Repository: https://github.com/osma56854-wq/Midaan-wep-
 - Supabase project: `midaan` (`lkofveroqcrfehczdlkl`)
 - Latest inspected GitHub Pages deployment workflow completed successfully.
-- Latest inspected validation workflow completed successfully; the Node test output reported 53 passing tests and 0 failures.
+- Latest inspected validation workflow completed successfully; the Node test output reported 55 passing tests and 0 failures.
 - Product image upload retry, module-load error isolation, and maintenance assignee selection are present in the deployed code line.
 
 ## What has been verified
