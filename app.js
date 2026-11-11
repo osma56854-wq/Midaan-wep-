@@ -454,15 +454,24 @@ $("createProduct").onclick=async()=>{
  try{
   const payload={seller_id:currentUserId,title,description,category,sku:sku||null,country_code,city:city||null,product_condition,price_type,price_amount:price_type==="quote"?null:price_amount,currency_code:price_type==="quote"?null:currency_code,min_order_qty,unit,lead_days,status};
   const {data,error}=await db.from("industrial_products").insert(payload).select("id").single();if(error)throw error;
-  let imageSaved=false;
+  let imageSaved=false,imageFailure="";
   if(file){
    const ext=file.type==="image/jpeg"?"jpg":file.type==="image/png"?"png":"webp",path=currentUserId+"/"+data.id+"/"+crypto.randomUUID()+"."+ext;
    const {error:uploadError}=await db.storage.from("industrial-products").upload(path,file,{contentType:file.type,upsert:false});
-   if(!uploadError){const {error:updateError}=await db.from("industrial_products").update({image_path:path}).eq("id",data.id);if(!updateError)imageSaved=true;else await db.storage.from("industrial-products").remove([path]);}
+   if(uploadError){imageFailure="فشل رفع الصورة: "+uploadError.message;}
+   else{
+    const {error:updateError}=await db.from("industrial_products").update({image_path:path}).eq("id",data.id);
+    if(!updateError)imageSaved=true;
+    else{
+     imageFailure="رُفعت الصورة لكن تعذر ربطها بالمنتج: "+updateError.message;
+     const {error:cleanupError}=await db.storage.from("industrial-products").remove([path]);
+     if(cleanupError)imageFailure+=" وتعذر تنظيف الملف المرفوع: "+cleanupError.message;
+    }
+   }
   }
   for(const id of ["productTitle","productDescription","productSku","productPriceAmount","productCurrency","productCity"])$(id).value="";
   $("productImage").value="";await loadCatalog();
-  showMessage("catalogMessage",file&&!imageSaved?"تم حفظ المنتج، لكن تعذر رفع الصورة. يمكنك إعادة إضافة المنتج لاحقًا بصورة جديدة.":"تم حفظ المنتج في الكتالوج.");
+  showMessage("catalogMessage",file&&!imageSaved?"تم حفظ بيانات المنتج، لكن لم تُحفظ صورته. "+imageFailure+" المنتج محفوظ بدون صورة؛ أعد المحاولة بعد معالجة المشكلة.":"تم حفظ المنتج في الكتالوج.");
  }catch(e){showMessage("catalogMessage",e.message||"تعذر حفظ المنتج.",true)}finally{b.disabled=false}
 };
 $("catalogList").addEventListener("click",async event=>{
