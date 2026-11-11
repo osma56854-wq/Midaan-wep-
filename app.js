@@ -394,11 +394,16 @@ $("createTeamInvite").onclick=async()=>{
   if(!invite?.invite_token)throw new Error("تم إنشاء الدعوة لكن لم يصل رمز الدعوة.");
   $("teamInviteEmail").value="";
   $("teamInviteToken").value=invite.invite_token;
+  $("teamInviteLink").value=window.location.origin+window.location.pathname+"#invite="+invite.invite_token;
   $("teamInviteResult").classList.remove("hidden");
   await renderTeam(p_org_id,true);
   showMessage("teamMessage","تم إنشاء الدعوة لمدة 7 أيام. انسخ الرمز وأرسله بنفسك للعضو عبر قناة موثوقة؛ لا يُرسل مِيدان بريدًا تلقائيًا.");
  }catch(e){showMessage("teamMessage",e.message||"تعذر إنشاء الدعوة.",true)}
  finally{b.disabled=false}
+};
+$("copyTeamInviteLink").onclick=async()=>{
+ const link=$("teamInviteLink").value;
+ try{await navigator.clipboard.writeText(link);showMessage("teamMessage","تم نسخ رابط الدعوة. أرسله للعضو عبر قناة موثوقة.")}catch(e){$("teamInviteLink").focus();$("teamInviteLink").select();showMessage("teamMessage","حدد الرابط وانسخه يدويًا.")};
 };
 $("copyTeamInvite").onclick=async()=>{
  const token=$("teamInviteToken").value;
@@ -408,6 +413,15 @@ $("teamInvitations").addEventListener("click",async event=>{
  const b=event.target.closest("[data-revoke-invite]");if(!b)return;b.disabled=true;
  try{const {error}=await db.rpc("revoke_organization_invitation",{p_invitation_id:b.dataset.revokeInvite});if(error)throw error;await renderTeam($("teamOrg").value,true);showMessage("teamMessage","تم إلغاء الدعوة.")}catch(e){showMessage("teamMessage",e.message||"تعذر إلغاء الدعوة.",true)}finally{b.disabled=false}
 });
+function applyInviteFromUrl(){
+ const match=location.hash.match(/^#invite=([0-9a-fA-F]{64})$/);
+ if(!match)return false;
+ $("acceptTeamToken").value=match[1];
+ history.replaceState(null,"",location.pathname+"#team");
+ activateView("team",{updateUrl:false});
+ showMessage("acceptTeamMessage","تم تجهيز رمز الدعوة. راجع الحساب ثم اضغط قبول الدعوة والانضمام.");
+ return true;
+}
 $("acceptTeamInvite").onclick=async()=>{
  const p_token=$("acceptTeamToken").value.trim(),b=$("acceptTeamInvite");
  if(!/^[0-9a-fA-F]{64}$/.test(p_token)){showMessage("acceptTeamMessage","أدخل رمز دعوة صحيحًا مكوّنًا من 64 حرفًا.",true);return}
@@ -601,7 +615,7 @@ function showRecoveryForm(){mode="recovery";$("authTitle").textContent="تعيي
 $("forgotPassword").onclick=async()=>{const email=$("email").value.trim(),b=$("forgotPassword");if(!email){showMessage("authMessage","اكتب بريدك الإلكتروني أولًا.",true);return}b.disabled=true;try{const redirectTo=window.location.origin+window.location.pathname;const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo});if(error)throw error;showMessage("authMessage","لو البريد مسجل في مِيدان، هتوصلك رسالة لإعادة تعيين كلمة المرور. افحص الوارد والرسائل غير المرغوب فيها.");}catch(e){showMessage("authMessage",e.message||"تعذر إرسال رسالة الاستعادة.",true)}finally{b.disabled=false}};
 $("saveNewPassword").onclick=async()=>{const p=$("newPassword").value,c=$("confirmPassword").value,b=$("saveNewPassword");if(p.length<12){showMessage("authMessage","كلمة المرور الجديدة يجب ألا تقل عن 12 حرفًا.",true);return}if(p!==c){showMessage("authMessage","كلمتا المرور غير متطابقتين.",true);return}b.disabled=true;try{if(await isCompromisedPassword(p))throw new Error("كلمة المرور دي ظهرت في تسريبات معروفة. اختار كلمة مرور مختلفة.");const {error}=await db.auth.updateUser({password:p});if(error)throw error;await db.auth.signOut();$("newPassword").value="";$("confirmPassword").value="";$("showLogin").classList.remove("hidden");$("showSignup").classList.remove("hidden");setMode("login");showMessage("authMessage","تم تغيير كلمة المرور بنجاح. سجّل الدخول بكلمة المرور الجديدة.");}catch(e){showMessage("authMessage",e.message||"تعذر تغيير كلمة المرور.",true)}finally{b.disabled=false}};
 db.auth.onAuthStateChange((event)=>{if(event==="PASSWORD_RECOVERY")showRecoveryForm()});
-$("authSubmit").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;const b=$("authSubmit");b.disabled=true;try{if(!email||!password)throw new Error("اكتب البريد الإلكتروني وكلمة المرور.");if(mode==="signup"){if(password.length<12)throw new Error("كلمة المرور يجب ألا تقل عن 12 حرفًا.");if(await isCompromisedPassword(password))throw new Error("كلمة المرور دي ظهرت في تسريبات معروفة. اختار كلمة مرور مختلفة.");const {data,error}=await db.auth.signUp({email,password,options:{data:{display_name:$("displayName").value.trim()}}});if(error)throw error;if(!data.session){showMessage("authMessage","تم إنشاء الحساب. افتح رسالة التأكيد في بريدك الإلكتروني، ثم ارجع وسجّل الدخول.");return}}else{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error}setScreen(true);await loadAll()}catch(e){const target=$("appScreen").classList.contains("hidden")?"authMessage":"globalMessage";showMessage(target,e.message||"حدث خطأ غير متوقع.",true)}finally{b.disabled=false}};
+$("authSubmit").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;const b=$("authSubmit");b.disabled=true;try{if(!email||!password)throw new Error("اكتب البريد الإلكتروني وكلمة المرور.");if(mode==="signup"){if(password.length<12)throw new Error("كلمة المرور يجب ألا تقل عن 12 حرفًا.");if(await isCompromisedPassword(password))throw new Error("كلمة المرور دي ظهرت في تسريبات معروفة. اختار كلمة مرور مختلفة.");const {data,error}=await db.auth.signUp({email,password,options:{data:{display_name:$("displayName").value.trim()}}});if(error)throw error;if(!data.session){showMessage("authMessage","تم إنشاء الحساب. افتح رسالة التأكيد في بريدك الإلكتروني، ثم ارجع وسجّل الدخول.");return}}else{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error}setScreen(true);await loadAll();applyInviteFromUrl()}catch(e){const target=$("appScreen").classList.contains("hidden")?"authMessage":"globalMessage";showMessage(target,e.message||"حدث خطأ غير متوقع.",true)}finally{b.disabled=false}};
 $("signOut").onclick=async()=>{await db.auth.signOut();setScreen(false)};
 $("createOrg").onclick=async()=>{const name=$("orgName").value.trim(),b=$("createOrg");if(name.length<2){showMessage("globalMessage","اكتب اسم المنشأة بشكل صحيح.",true);return}b.disabled=true;try{const {error}=await db.rpc("create_organization_with_owner",{p_name:name});if(error)throw error;$("orgName").value="";await loadAll();showMessage("globalMessage","تم إنشاء المنشأة وربط مالكها بحسابك في عملية واحدة.")}catch(e){showMessage("globalMessage",e.message||"تعذر إنشاء المنشأة.",true)}finally{b.disabled=false}};
 $("saveSkill").onclick=async()=>{
@@ -650,4 +664,4 @@ $("saveSkill").onclick=async()=>{
 $("createMachine").onclick=async()=>{const orgId=$("machineOrg").value,name=$("machineName").value.trim(),b=$("createMachine");if(!orgId||name.length<2){showMessage("globalMessage","اختر منشأة واكتب اسم الماكينة.",true);return}b.disabled=true;try{const {data:{user}}=await db.auth.getUser();const {error}=await db.from("machines").insert({organization_id:orgId,name,manufacturer:$("manufacturer").value.trim()||null,model:$("machineModel").value.trim()||null,created_by:user.id});if(error)throw error;$("machineName").value="";$("manufacturer").value="";$("machineModel").value="";await loadMachines();showMessage("globalMessage","تم تسجيل الماكينة.")}catch(e){showMessage("globalMessage",e.message||"تعذر حفظ الماكينة.",true)}finally{b.disabled=false}};
 $("skillOrg").onchange=()=>loadSkills().catch(e=>showMessage("globalMessage",e.message,true));$("machineOrg").onchange=()=>loadMachines().catch(e=>showMessage("globalMessage",e.message,true));$("skillSearch").oninput=renderSkillLists;
 document.querySelectorAll("[data-view]").forEach(t=>t.onclick=()=>activateView(t.dataset.view));document.querySelectorAll("[data-go]").forEach(t=>t.onclick=()=>activateView(t.dataset.go));
-(async()=>{const {data:{session}}=await db.auth.getSession();setScreen(!!session);if(session){try{await loadAll();activateView(location.hash.slice(1)||"overview",{updateUrl:false})}catch(e){showMessage("globalMessage",e.message||"تعذر تحميل بيانات الحساب.",true)}}})();
+(async()=>{const {data:{session}}=await db.auth.getSession();setScreen(!!session);if(session){try{await loadAll();if(!applyInviteFromUrl())activateView(location.hash.slice(1)||"overview",{updateUrl:false})}catch(e){showMessage("globalMessage",e.message||"تعذر تحميل بيانات الحساب.",true)}}})();
