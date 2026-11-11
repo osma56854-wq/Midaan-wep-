@@ -2,7 +2,7 @@
 
 MIDAAN connects industrial technicians, engineers, factories, and suppliers through organization workspaces, verified practical skills, machine records, maintenance workflows, fault reports, a supplier marketplace, RFQs, and a product catalog.
 
-**Live application:** https://osma56854-wq.github.io/Midaan-wep/
+**Live application:** https://osma56854-wq.github.io/Midaan-wep-/
 
 ## Product modules
 
