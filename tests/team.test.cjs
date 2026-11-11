@@ -25,6 +25,14 @@ test("only owners and admins can create or revoke invitations",()=>{
  assert.ok(sql.includes("private.is_org_owner(v_org)"));
  assert.ok(sql.includes("Only organization owners or admins"));
 });
+test("invitation links carry a one-time token and prefill the accept form",()=>{
+ assert.ok(html.includes('id="teamInviteLink"'));
+ assert.ok(html.includes('id="copyTeamInviteLink"'));
+ assert.match(js,/window\.location\.pathname\+"#invite="/);
+ assert.match(js,/function applyInviteFromUrl\(\)/);
+ assert.match(js,/acceptTeamToken"\)\.value=match\[1\]/);
+ assert.match(js,/history\.replaceState\(null,"",location\.pathname\+"#team"\)/);
+});
 test("invitation acceptance requires the invited account email and a valid single-use token",()=>{
  assert.ok(sql.includes("v_invitation.invited_email<>v_email"));
  assert.ok(sql.includes("v_invitation.accepted_at is not null"));
