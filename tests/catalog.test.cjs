@@ -32,5 +32,10 @@ test("product listings validate currency, quantity, and safe image MIME types",(
  assert.ok(sql.includes("min_order_qty>0"));
  assert.ok(js.includes('["image/jpeg","image/png","image/webp"]'));
  assert.ok(js.includes("file.size>5*1024*1024"));
+ assert.ok(js.includes("imageFailure=\"\""));
+ assert.ok(js.includes("فشل رفع الصورة: "));
+ assert.ok(js.includes("تعذر ربطها بالمنتج: "));
+ assert.ok(js.includes("تعذر تنظيف الملف المرفوع: "));
+ assert.ok(js.includes("المنتج محفوظ بدون صورة"));
  assert.ok(js.includes("^[A-Z]{3}$"));
 });
