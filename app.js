@@ -424,6 +424,27 @@ $("acceptTeamInvite").onclick=async()=>{
 let catalogProducts=[];
 const productCategoryLabels={plastic_resin:"خامات البلاستيك",spare_parts:"قطع غيار",molds:"قوالب",machinery:"ماكينات",tools:"عدد وأدوات",packaging:"تغليف",other:"أخرى"};
 const productConditionLabels={new:"جديد",used:"مستعمل",refurbished:"مجدد"};
+let pendingCatalogImage=null;
+async function uploadCatalogProductImage(productId,file){
+ const ext=file.type==="image/jpeg"?"jpg":file.type==="image/png"?"png":"webp";
+ const path=currentUserId+"/"+productId+"/"+crypto.randomUUID()+"."+ext;
+ const {error:uploadError}=await db.storage.from("industrial-products").upload(path,file,{contentType:file.type,upsert:false});
+ if(uploadError)throw new Error("فشل رفع الصورة: "+uploadError.message);
+ const {error:updateError}=await db.from("industrial_products").update({image_path:path}).eq("id",productId);
+ if(updateError){
+  let message="رُفعت الصورة لكن تعذر ربطها بالمنتج: "+updateError.message;
+  const {error:cleanupError}=await db.storage.from("industrial-products").remove([path]);
+  if(cleanupError)message+=" وتعذر تنظيف الملف المرفوع: "+cleanupError.message;
+  throw new Error(message);
+ }
+ return path;
+}
+function showCatalogImageRetry(productId,file){
+ pendingCatalogImage={productId,file};
+ $("retryProductImage").classList.remove("hidden");
+ $("retryProductImage").disabled=false;
+}
+
 async function loadCatalog(){
  if(!currentUserId)return;
  const {data,error}=await db.from("industrial_products").select("id,seller_id,title,description,category,sku,country_code,city,product_condition,price_type,price_amount,currency_code,min_order_qty,unit,lead_days,image_path,status,created_at,professional_profiles(display_name,professional_type,is_public)").order("created_at",{ascending:false}).limit(150);
@@ -455,24 +476,28 @@ $("createProduct").onclick=async()=>{
   const payload={seller_id:currentUserId,title,description,category,sku:sku||null,country_code,city:city||null,product_condition,price_type,price_amount:price_type==="quote"?null:price_amount,currency_code:price_type==="quote"?null:currency_code,min_order_qty,unit,lead_days,status};
   const {data,error}=await db.from("industrial_products").insert(payload).select("id").single();if(error)throw error;
   let imageSaved=false,imageFailure="";
+  pendingCatalogImage=null;$("retryProductImage").classList.add("hidden");
   if(file){
-   const ext=file.type==="image/jpeg"?"jpg":file.type==="image/png"?"png":"webp",path=currentUserId+"/"+data.id+"/"+crypto.randomUUID()+"."+ext;
-   const {error:uploadError}=await db.storage.from("industrial-products").upload(path,file,{contentType:file.type,upsert:false});
-   if(uploadError){imageFailure="فشل رفع الصورة: "+uploadError.message;}
-   else{
-    const {error:updateError}=await db.from("industrial_products").update({image_path:path}).eq("id",data.id);
-    if(!updateError)imageSaved=true;
-    else{
-     imageFailure="رُفعت الصورة لكن تعذر ربطها بالمنتج: "+updateError.message;
-     const {error:cleanupError}=await db.storage.from("industrial-products").remove([path]);
-     if(cleanupError)imageFailure+=" وتعذر تنظيف الملف المرفوع: "+cleanupError.message;
-    }
-   }
+   try{await uploadCatalogProductImage(data.id,file);imageSaved=true;}
+   catch(error){imageFailure=error.message;showCatalogImageRetry(data.id,file);}
   }
   for(const id of ["productTitle","productDescription","productSku","productPriceAmount","productCurrency","productCity"])$(id).value="";
   $("productImage").value="";await loadCatalog();
-  showMessage("catalogMessage",file&&!imageSaved?"تم حفظ بيانات المنتج، لكن لم تُحفظ صورته. "+imageFailure+" المنتج محفوظ بدون صورة؛ أعد المحاولة بعد معالجة المشكلة.":"تم حفظ المنتج في الكتالوج.");
+  showMessage("catalogMessage",file&&!imageSaved?"تم حفظ بيانات المنتج، لكن لم تُحفظ صورته. "+imageFailure+" يمكنك الضغط على «إعادة محاولة رفع الصورة» دون إنشاء منتج جديد.":"تم حفظ المنتج في الكتالوج.");
  }catch(e){showMessage("catalogMessage",e.message||"تعذر حفظ المنتج.",true)}finally{b.disabled=false}
+};
+$("retryProductImage").onclick=async()=>{
+ const pending=pendingCatalogImage,b=$("retryProductImage");
+ if(!pending)return;
+ b.disabled=true;
+ try{
+  await uploadCatalogProductImage(pending.productId,pending.file);
+  pendingCatalogImage=null;b.classList.add("hidden");
+  await loadCatalog();
+  showMessage("catalogMessage","تم رفع الصورة وربطها بالمنتج بنجاح.");
+ }catch(error){
+  showMessage("catalogMessage",error.message||"تعذرت إعادة محاولة رفع الصورة. يمكنك المحاولة مرة أخرى.",true);
+ }finally{if(pendingCatalogImage)b.disabled=false}
 };
 $("catalogList").addEventListener("click",async event=>{
  const quote=event.target.closest("[data-product-rfq]");
