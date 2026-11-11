@@ -483,7 +483,7 @@ $("createProduct").onclick=async()=>{
   }
   for(const id of ["productTitle","productDescription","productSku","productPriceAmount","productCurrency","productCity"])$(id).value="";
   $("productImage").value="";await loadCatalog();
-  showMessage("catalogMessage",file&&!imageSaved?"تم حفظ بيانات المنتج، لكن لم تُحفظ صورته. "+imageFailure+" يمكنك الضغط على «إعادة محاولة رفع الصورة» دون إنشاء منتج جديد.":"تم حفظ المنتج في الكتالوج.");
+  showMessage("catalogMessage",file&&!imageSaved?"تم حفظ بيانات المنتج، لكن لم تُحفظ صورته. المنتج محفوظ بدون صورة. "+imageFailure+" يمكنك الضغط على «إعادة محاولة رفع الصورة» دون إنشاء منتج جديد.":"تم حفظ المنتج في الكتالوج.");
  }catch(e){showMessage("catalogMessage",e.message||"تعذر حفظ المنتج.",true)}finally{b.disabled=false}
 };
 $("retryProductImage").onclick=async()=>{
